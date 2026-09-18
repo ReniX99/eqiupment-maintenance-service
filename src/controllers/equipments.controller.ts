@@ -28,3 +28,11 @@ export const getEquipments = (req: Request, res: Response) => {
 
   res.json(equipments);
 };
+
+export const getEquipment = (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const equipment = equipmentsService.getEquipment(id);
+
+  res.json(equipment);
+};

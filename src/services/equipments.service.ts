@@ -1,3 +1,4 @@
+import NotFoundError from "../errors/not-found.error";
 import * as equipmentsRepository from "../repositories/equipments.repository";
 
 export const getEquipments = (
@@ -34,4 +35,14 @@ export const getEquipments = (
       limit: limitNumber,
     },
   };
+};
+
+export const getEquipment = (id: string) => {
+  const equipment = equipmentsRepository.getEquipment(id);
+
+  if (!equipment) {
+    throw new NotFoundError("Equipment is not found");
+  }
+
+  return equipment;
 };

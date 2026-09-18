@@ -73,3 +73,7 @@ export const getEquipments = (
     total: filteredEquipments.length,
   };
 };
+
+export const getEquipment = (id: string): Equipment | undefined => {
+  return equipments.find((eq) => eq.id === id);
+};
