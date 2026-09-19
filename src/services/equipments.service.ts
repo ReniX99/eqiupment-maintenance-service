@@ -60,6 +60,45 @@ export const createEquipment = (equipment) => {
   return equipmentsRepository.createEquipment(equipment);
 };
 
+export const updateEquipment = (id: string, equipment) => {
+  const equipmentModel = equipmentsRepository.getEquipment(id);
+  if (!equipmentModel) {
+    throw new NotFoundError("Equipment is not found");
+  }
+
+  const { name, type, serialNumber, location, status } = equipment;
+
+  if (name) {
+    equipmentModel.name = name;
+  }
+
+  if (type) {
+    equipmentModel.type = type;
+  }
+
+  if (serialNumber) {
+    const existingEquipment =
+      equipmentsRepository.getEquipmentBySerialNumber(serialNumber);
+
+    if (existingEquipment && existingEquipment.id !== equipmentModel.id) {
+      throw new ConflictError(
+        "Equipment with same serialNumber already exists",
+      );
+    }
+    equipmentModel.serialNumber = serialNumber;
+  }
+
+  if (location) {
+    equipmentModel.location = location;
+  }
+
+  if (status) {
+    equipmentModel.status = status;
+  }
+
+  return equipmentsRepository.updateEquipment(id, equipmentModel);
+};
+
 export const deleteEquipment = (id: string): void => {
   const equipment = equipmentsRepository.getEquipment(id);
 

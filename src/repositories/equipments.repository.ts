@@ -97,6 +97,16 @@ export const createEquipment = (equipment): Equipment => {
   return equipmentModel;
 };
 
+export const updateEquipment = (
+  id: string,
+  equipment: Equipment,
+): Equipment => {
+  const index = equipments.findIndex((eq) => eq.id === id);
+  equipments[index] = equipment;
+
+  return equipment;
+};
+
 export const deleteEquipment = (id: string): void => {
   const index = equipments.findIndex((eq) => eq.id === id);
   equipments.splice(index, 1);
