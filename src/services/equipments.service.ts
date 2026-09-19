@@ -46,3 +46,7 @@ export const getEquipment = (id: string) => {
 
   return equipment;
 };
+
+export const createEquipment = (equipment) => {
+  return equipmentsRepository.createEquipment(equipment);
+};

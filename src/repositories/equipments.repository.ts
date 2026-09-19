@@ -1,3 +1,5 @@
+import * as uuid from "uuid";
+
 const equipments: Equipment[] = [
   {
     id: "1",
@@ -76,4 +78,15 @@ export const getEquipments = (
 
 export const getEquipment = (id: string): Equipment | undefined => {
   return equipments.find((eq) => eq.id === id);
+};
+
+export const createEquipment = (equipment): Equipment => {
+  const id = uuid.v4();
+  const equipmentModel: Equipment = {
+    id,
+    ...equipment,
+  };
+  equipments.push(equipmentModel);
+
+  return equipmentModel;
 };

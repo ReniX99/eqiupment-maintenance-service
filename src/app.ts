@@ -4,6 +4,7 @@ import { handleError } from "./middlewares/error-handler.middleware";
 
 const app: Express = express();
 
+app.use(express.json());
 app.use("/api", router);
 app.use(handleError);
 

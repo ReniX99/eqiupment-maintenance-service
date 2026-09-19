@@ -36,3 +36,9 @@ export const getEquipment = (req: Request, res: Response) => {
 
   res.json(equipment);
 };
+
+export const createEquipment = (req: Request, res: Response) => {
+  const equipment = equipmentsService.createEquipment(req.body);
+
+  res.status(201).json(equipment);
+};
