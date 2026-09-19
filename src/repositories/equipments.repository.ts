@@ -80,6 +80,12 @@ export const getEquipment = (id: string): Equipment | undefined => {
   return equipments.find((eq) => eq.id === id);
 };
 
+export const getEquipmentBySerialNumber = (
+  serialNumber: string,
+): Equipment | undefined => {
+  return equipments.find((eq) => eq.serialNumber === serialNumber);
+};
+
 export const createEquipment = (equipment): Equipment => {
   const id = uuid.v4();
   const equipmentModel: Equipment = {

@@ -1,3 +1,4 @@
+import ConflictError from "../errors/conflict.error";
 import NotFoundError from "../errors/not-found.error";
 import * as equipmentsRepository from "../repositories/equipments.repository";
 
@@ -48,6 +49,14 @@ export const getEquipment = (id: string) => {
 };
 
 export const createEquipment = (equipment) => {
+  const serialNumber = equipment.serialNumber;
+
+  const existingEquipment =
+    equipmentsRepository.getEquipmentBySerialNumber(serialNumber);
+  if (existingEquipment) {
+    throw new ConflictError("Equipment with same serialNumber already exists");
+  }
+
   return equipmentsRepository.createEquipment(equipment);
 };
 
