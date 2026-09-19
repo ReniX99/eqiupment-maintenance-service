@@ -42,3 +42,11 @@ export const createEquipment = (req: Request, res: Response) => {
 
   res.status(201).json(equipment);
 };
+
+export const deleteEquipment = (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  equipmentsService.deleteEquipment(id);
+
+  res.sendStatus(200);
+};

@@ -90,3 +90,8 @@ export const createEquipment = (equipment): Equipment => {
 
   return equipmentModel;
 };
+
+export const deleteEquipment = (id: string): void => {
+  const index = equipments.findIndex((eq) => eq.id === id);
+  equipments.splice(index, 1);
+};

@@ -50,3 +50,13 @@ export const getEquipment = (id: string) => {
 export const createEquipment = (equipment) => {
   return equipmentsRepository.createEquipment(equipment);
 };
+
+export const deleteEquipment = (id: string): void => {
+  const equipment = equipmentsRepository.getEquipment(id);
+
+  if (!equipment) {
+    throw new NotFoundError("Equipment is not found");
+  }
+
+  equipmentsRepository.deleteEquipment(id);
+};
