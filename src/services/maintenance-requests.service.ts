@@ -165,3 +165,11 @@ export const deleteRequest = (id: string) => {
 
   requestsRepository.deleteRequest(id);
 };
+
+export const getRequestsByEquipmentId = (equipmentId: string) => {
+  return requestsRepository.getRequestsByEquipmentId(equipmentId);
+};
+
+export const getUnclosedRequestsByEquipmentId = (equipmentId: string) => {
+  return requestsRepository.getUnclosedRequests(equipmentId);
+};

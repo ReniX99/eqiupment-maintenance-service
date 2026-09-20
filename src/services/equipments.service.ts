@@ -2,6 +2,7 @@ import * as uuid from "uuid";
 import ConflictError from "../errors/conflict.error";
 import NotFoundError from "../errors/not-found.error";
 import * as equipmentsRepository from "../repositories/equipments.repository";
+import * as requestsService from "../services/maintenance-requests.service";
 import {
   CreateEquipmentDto,
   UpdateEquipmentDto,
@@ -118,5 +119,22 @@ export const deleteEquipment = (id: string): void => {
     throw new NotFoundError("Equipment is not found");
   }
 
+  const unclosedRequests = requestsService.getUnclosedRequestsByEquipmentId(id);
+  if (unclosedRequests.length > 0) {
+    throw new ConflictError(
+      "Can't remove equipment with unclosed maintenance requests",
+    );
+  }
+
   equipmentsRepository.deleteEquipment(id);
+};
+
+export const getEquipmentRequests = (id: string) => {
+  const equipment = equipmentsRepository.getEquipment(id);
+
+  if (!equipment) {
+    throw new NotFoundError("Equipment is not found");
+  }
+
+  return requestsService.getRequestsByEquipmentId(id);
 };
