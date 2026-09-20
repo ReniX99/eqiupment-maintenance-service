@@ -3,6 +3,7 @@ import { CreateRequestDto } from "../schemas/maintenance-requests/maintenance-re
 import * as equipmentsService from "../services/equipments.service";
 import * as requestsRepository from "../repositories/maintenance-requests.repository";
 import NotFoundError from "../errors/not-found.error";
+import { de } from "zod/locales";
 
 export const createRequest = (request: CreateRequestDto) => {
   const equipmentId = request.equipmentId;
@@ -36,4 +37,57 @@ export const getRequest = (id: string) => {
   }
 
   return request;
+};
+
+export const getRequests = (
+  equipmentId: string | undefined,
+  title: string | undefined,
+  description: string | undefined,
+  priority: string | undefined,
+  status: string | undefined,
+  minPlannedAt: string | undefined,
+  maxPlannedAt: string | undefined,
+  minCreatedAt: string | undefined,
+  maxCreatedAt: string | undefined,
+  sortBy:
+    | "id"
+    | "equipmentId"
+    | "title"
+    | "description"
+    | "priority"
+    | "status"
+    | "plannedAt"
+    | "createdAt"
+    | "updatedAt",
+  order: "asc" | "desc",
+  page: number | undefined,
+  limit: number | undefined,
+) => {
+  const pageNumber = page || 1;
+  const limitNumber = limit || 10;
+
+  const { data, total } = requestsRepository.getRequests(
+    equipmentId,
+    title,
+    description,
+    priority,
+    status,
+    minPlannedAt,
+    maxPlannedAt,
+    minCreatedAt,
+    maxCreatedAt,
+    sortBy,
+    order,
+    pageNumber,
+    limitNumber,
+  );
+
+  return {
+    data,
+    metadata: {
+      total,
+      page: pageNumber,
+      limit: limitNumber,
+    },
+  };
 };

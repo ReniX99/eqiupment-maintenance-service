@@ -13,3 +13,32 @@ export const requestParamsSchema = z.strictObject({
   id: z.uuid(),
 });
 export type RequestParams = z.infer<typeof requestParamsSchema>;
+
+export const requestsQuerySchema = z.strictObject({
+  equipmentId: z.coerce.string().optional(),
+  title: z.coerce.string().optional(),
+  description: z.coerce.string().optional(),
+  priority: z.enum(["low", "medium", "high", "critical"]).optional(),
+  status: z.enum(["new", "in_progress", "done", "rejected"]).optional(),
+  minPlannedAt: z.iso.date().optional(),
+  maxPlannedAt: z.iso.date().optional(),
+  minCreatedAt: z.iso.date().optional(),
+  maxCreatedAt: z.iso.date().optional(),
+  sortBy: z
+    .enum([
+      "id",
+      "equipmentId",
+      "title",
+      "description",
+      "priority",
+      "status",
+      "plannedAt",
+      "createdAt",
+      "updatedAt",
+    ])
+    .optional(),
+  order: z.enum(["asc", "desc"]).optional(),
+  page: z.coerce.number().min(1).optional(),
+  limit: z.coerce.number().min(1).optional(),
+});
+export type RequestsQuery = z.infer<typeof requestsQuerySchema>;
