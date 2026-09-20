@@ -1,20 +1,25 @@
+import * as uuid from "uuid";
 import ConflictError from "../errors/conflict.error";
 import NotFoundError from "../errors/not-found.error";
 import * as equipmentsRepository from "../repositories/equipments.repository";
+import {
+  CreateEquipmentDto,
+  UpdateEquipmentDto,
+} from "../schemas/equipments/equipments.schema";
 
 export const getEquipments = (
-  name,
-  status,
-  type,
-  minInstalledAt,
-  maxInstalledAt,
-  sortBy,
-  order,
-  page,
-  limit,
+  name: string | undefined,
+  status: string | undefined,
+  type: string | undefined,
+  minInstalledAt: string | undefined,
+  maxInstalledAt: string | undefined,
+  sortBy: "type" | "name" | "serialNumber" | "status" | "installedAt" | "id",
+  order: "asc" | "desc",
+  page: number | undefined,
+  limit: number | undefined,
 ) => {
-  const pageNumber = Number(page) || 1;
-  const limitNumber = Number(limit) || 10;
+  const pageNumber = page || 1;
+  const limitNumber = limit || 10;
 
   const { data, total } = equipmentsRepository.getEquipments(
     name,
@@ -48,7 +53,7 @@ export const getEquipment = (id: string) => {
   return equipment;
 };
 
-export const createEquipment = (equipment) => {
+export const createEquipment = (equipment: CreateEquipmentDto) => {
   const serialNumber = equipment.serialNumber;
 
   const existingEquipment =
@@ -57,10 +62,17 @@ export const createEquipment = (equipment) => {
     throw new ConflictError("Equipment with same serialNumber already exists");
   }
 
-  return equipmentsRepository.createEquipment(equipment);
+  const id = uuid.v4();
+  const equipmentModel: Equipment = {
+    id: id,
+    ...equipment,
+  };
+
+  equipmentsRepository.createEquipment(equipmentModel);
+  return equipmentModel;
 };
 
-export const updateEquipment = (id: string, equipment) => {
+export const updateEquipment = (id: string, equipment: UpdateEquipmentDto) => {
   const equipmentModel = equipmentsRepository.getEquipment(id);
   if (!equipmentModel) {
     throw new NotFoundError("Equipment is not found");

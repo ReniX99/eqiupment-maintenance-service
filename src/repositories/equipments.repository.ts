@@ -1,8 +1,6 @@
-import * as uuid from "uuid";
-
 const equipments: Equipment[] = [
   {
-    id: "1",
+    id: "7dcd84ea-1b05-4ba5-ac58-3695d867037c",
     name: "Оборудование 1",
     type: "turbine",
     serialNumber: "E001",
@@ -14,7 +12,7 @@ const equipments: Equipment[] = [
     installedAt: "2026-09-18",
   },
   {
-    id: "2",
+    id: "91a83b0c-ff30-4567-b13a-d42ffa3d81c2",
     name: "Оборудование 2",
     type: "turbine",
     serialNumber: "E002",
@@ -28,15 +26,15 @@ const equipments: Equipment[] = [
 ];
 
 export const getEquipments = (
-  name,
-  status,
-  type,
-  minInstalledAt,
-  maxInstalledAt,
-  sortBy,
-  order,
-  page,
-  limit,
+  name: string | undefined,
+  status: string | undefined,
+  type: string | undefined,
+  minInstalledAt: string | undefined,
+  maxInstalledAt: string | undefined,
+  sortBy: "type" | "name" | "serialNumber" | "status" | "installedAt" | "id",
+  order: "asc" | "desc",
+  page: number,
+  limit: number,
 ) => {
   const filteredEquipments = equipments.filter((eq) => {
     if (
@@ -86,15 +84,8 @@ export const getEquipmentBySerialNumber = (
   return equipments.find((eq) => eq.serialNumber === serialNumber);
 };
 
-export const createEquipment = (equipment): Equipment => {
-  const id = uuid.v4();
-  const equipmentModel: Equipment = {
-    id,
-    ...equipment,
-  };
-  equipments.push(equipmentModel);
-
-  return equipmentModel;
+export const createEquipment = (equipment: Equipment): void => {
+  equipments.push(equipment);
 };
 
 export const updateEquipment = (

@@ -23,6 +23,6 @@ interface Equipment {
   type: "turbine" | "inverter" | "sensor" | "substation";
   serialNumber: string;
   location: EquipmentLocation;
-  status: "operational" | "maintenance" | "fault" | "decomissioned";
+  status: "operational" | "maintenance" | "fault" | "decommissioned";
   installedAt: string;
 }
