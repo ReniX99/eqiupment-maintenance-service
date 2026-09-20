@@ -165,3 +165,7 @@ export const deleteRequest = (id: string) => {
 
   requestsRepository.deleteRequest(id);
 };
+
+export const getRequestsByEquipmentId = (equipmentId: string) => {
+  return requestsRepository.getRequestsByEquipmentId(equipmentId);
+};

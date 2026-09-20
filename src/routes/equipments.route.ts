@@ -3,6 +3,7 @@ import {
   createEquipment,
   deleteEquipment,
   getEquipment,
+  getEquipmentRequests,
   getEquipments,
   updateEquipment,
 } from "../controllers/equipments.controller";
@@ -28,5 +29,8 @@ router
     updateEquipment,
   )
   .delete(validate({ params: equipmentParamsSchema }), deleteEquipment);
+router
+  .route("/:id/requests")
+  .get(validate({ params: equipmentParamsSchema }), getEquipmentRequests);
 
 export default router;
