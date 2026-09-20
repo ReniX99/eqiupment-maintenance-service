@@ -69,7 +69,10 @@ export const updateEquipment = (
   res.status(200).json(equipment);
 };
 
-export const deleteEquipment = (req: Request, res: Response) => {
+export const deleteEquipment = (
+  req: Request,
+  res: Response<{}, { params: EquipmentParams }>,
+) => {
   const { id } = res.locals.params;
 
   equipmentsService.deleteEquipment(id);

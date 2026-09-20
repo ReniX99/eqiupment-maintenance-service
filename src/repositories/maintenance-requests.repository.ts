@@ -109,3 +109,12 @@ export const deleteRequest = (id: string): void => {
 export const getRequestsByEquipmentId = (equipmentId: string) => {
   return requests.filter((r) => r.equipmentId === equipmentId);
 };
+
+export const getUnclosedRequests = (equipmentId: string) => {
+  return requests.filter(
+    (r) =>
+      r.equipmentId === equipmentId &&
+      r.status !== "done" &&
+      r.status !== "rejected",
+  );
+};

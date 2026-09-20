@@ -119,6 +119,13 @@ export const deleteEquipment = (id: string): void => {
     throw new NotFoundError("Equipment is not found");
   }
 
+  const unclosedRequests = requestsService.getUnclosedRequestsByEquipmentId(id);
+  if (unclosedRequests.length > 0) {
+    throw new ConflictError(
+      "Can't remove equipment with unclosed maintenance requests",
+    );
+  }
+
   equipmentsRepository.deleteEquipment(id);
 };
 
