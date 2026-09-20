@@ -156,3 +156,12 @@ export const updateRequestStatus = (
 
   return requestsRepository.updateRequest(id, requestModel);
 };
+
+export const deleteRequest = (id: string) => {
+  const request = requestsRepository.getRequest(id);
+  if (!request) {
+    throw new NotFoundError("Maintenance request is not found");
+  }
+
+  requestsRepository.deleteRequest(id);
+};

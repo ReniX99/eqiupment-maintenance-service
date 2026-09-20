@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createRequest,
+  deleteRequest,
   getRequest,
   getRequests,
   updateRequest,
@@ -27,7 +28,8 @@ router
   .patch(
     validate({ params: requestParamsSchema, body: updateRequestSchema }),
     updateRequest,
-  );
+  )
+  .delete(validate({ params: requestParamsSchema }), deleteRequest);
 
 router
   .route("/:id/status")

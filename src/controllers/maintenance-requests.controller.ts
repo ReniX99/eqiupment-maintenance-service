@@ -90,3 +90,14 @@ export const updateRequestStatus = (
 
   res.status(200).json(request);
 };
+
+export const deleteRequest = (
+  req: Request,
+  res: Response<{}, { params: RequestParams }>,
+) => {
+  const { id } = res.locals.params;
+
+  requestsService.deleteRequest(id);
+
+  res.sendStatus(200);
+};

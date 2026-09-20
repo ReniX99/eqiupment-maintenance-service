@@ -100,3 +100,8 @@ export const updateRequest = (
 
   return request;
 };
+
+export const deleteRequest = (id: string): void => {
+  const index = requests.findIndex((r) => r.id === id);
+  requests.splice(index, 1);
+};
