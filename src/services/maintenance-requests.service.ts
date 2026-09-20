@@ -1,9 +1,11 @@
 import * as uuid from "uuid";
-import { CreateRequestDto } from "../schemas/maintenance-requests/maintenance-requests.schema";
+import {
+  CreateRequestDto,
+  UpdateRequestDto,
+} from "../schemas/maintenance-requests/maintenance-requests.schema";
 import * as equipmentsService from "../services/equipments.service";
 import * as requestsRepository from "../repositories/maintenance-requests.repository";
 import NotFoundError from "../errors/not-found.error";
-import { de } from "zod/locales";
 
 export const createRequest = (request: CreateRequestDto) => {
   const equipmentId = request.equipmentId;
@@ -90,4 +92,37 @@ export const getRequests = (
       limit: limitNumber,
     },
   };
+};
+
+export const updateRequest = (id: string, request: UpdateRequestDto) => {
+  const requestModel = requestsRepository.getRequest(id);
+  if (!requestModel) {
+    throw new NotFoundError("Maintenance request is not found");
+  }
+
+  const { equipmentId, title, description, priority, plannedAt } = request;
+
+  if (equipmentId) {
+    equipmentsService.getEquipment(equipmentId);
+
+    requestModel.equipmentId = equipmentId;
+  }
+
+  if (title) {
+    requestModel.title = title;
+  }
+
+  if (description) {
+    requestModel.description = description;
+  }
+
+  if (priority) {
+    requestModel.priority = priority;
+  }
+
+  if (plannedAt) {
+    requestModel.plannedAt = plannedAt;
+  }
+
+  return requestsRepository.updateRequeset(id, requestModel);
 };

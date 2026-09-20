@@ -3,6 +3,7 @@ import {
   CreateRequestDto,
   RequestParams,
   RequestsQuery,
+  UpdateRequestDto,
 } from "../schemas/maintenance-requests/maintenance-requests.schema";
 import * as requestsService from "../services/maintenance-requests.service";
 
@@ -63,4 +64,16 @@ export const getRequests = (
   );
 
   res.json(requests);
+};
+
+export const updateRequest = (
+  req: Request,
+  res: Response<{}, { params: RequestParams; body: UpdateRequestDto }>,
+) => {
+  const { id } = res.locals.params;
+  const schema = res.locals.body;
+
+  const request = requestsService.updateRequest(id, schema);
+
+  res.status(200).json(request);
 };

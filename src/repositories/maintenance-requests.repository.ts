@@ -88,3 +88,15 @@ export const getRequests = (
     total: filteredRequests.length,
   };
 };
+
+export const updateRequeset = (
+  id: string,
+  request: MaintenanceRequest,
+): MaintenanceRequest => {
+  const index = requests.findIndex((r) => r.id === id);
+
+  request.updatedAt = new Date().toISOString();
+  requests[index] = request;
+
+  return request;
+};
