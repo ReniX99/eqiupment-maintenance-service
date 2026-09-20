@@ -89,7 +89,7 @@ export const getRequests = (
   };
 };
 
-export const updateRequeset = (
+export const updateRequest = (
   id: string,
   request: MaintenanceRequest,
 ): MaintenanceRequest => {

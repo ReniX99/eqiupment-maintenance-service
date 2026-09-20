@@ -51,3 +51,8 @@ export const updateRequestSchema = z.strictObject({
   plannedAt: z.iso.datetime().optional(),
 });
 export type UpdateRequestDto = z.infer<typeof updateRequestSchema>;
+
+export const updateRequestStatusSchema = z.strictObject({
+  status: z.enum(["in_progress", "done", "rejected"]),
+});
+export type UpdateRequestStatusDto = z.infer<typeof updateRequestStatusSchema>;

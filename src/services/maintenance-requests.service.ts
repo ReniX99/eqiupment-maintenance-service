@@ -2,10 +2,12 @@ import * as uuid from "uuid";
 import {
   CreateRequestDto,
   UpdateRequestDto,
+  UpdateRequestStatusDto,
 } from "../schemas/maintenance-requests/maintenance-requests.schema";
 import * as equipmentsService from "../services/equipments.service";
 import * as requestsRepository from "../repositories/maintenance-requests.repository";
 import NotFoundError from "../errors/not-found.error";
+import ConflictError from "../errors/conflict.error";
 
 export const createRequest = (request: CreateRequestDto) => {
   const equipmentId = request.equipmentId;
@@ -124,5 +126,33 @@ export const updateRequest = (id: string, request: UpdateRequestDto) => {
     requestModel.plannedAt = plannedAt;
   }
 
-  return requestsRepository.updateRequeset(id, requestModel);
+  return requestsRepository.updateRequest(id, requestModel);
+};
+
+export const updateRequestStatus = (
+  id: string,
+  request: UpdateRequestStatusDto,
+) => {
+  const status = request.status;
+
+  const requestModel = requestsRepository.getRequest(id);
+  if (!requestModel) {
+    throw new NotFoundError("Maintenance request is not found");
+  }
+
+  const currentStatus = requestModel.status;
+  if (
+    (status === "in_progress" && currentStatus === "new") ||
+    (status === "done" && currentStatus === "in_progress") ||
+    (status === "rejected" &&
+      (currentStatus === "new" || currentStatus === "in_progress"))
+  ) {
+    requestModel.status = status;
+  } else {
+    throw new ConflictError(
+      `Invalid status update: ${currentStatus} -> ${status}`,
+    );
+  }
+
+  return requestsRepository.updateRequest(id, requestModel);
 };
