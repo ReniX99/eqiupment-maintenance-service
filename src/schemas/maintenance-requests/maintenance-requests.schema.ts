@@ -8,3 +8,8 @@ export const createRequestSchema = z.strictObject({
   plannedAt: z.iso.datetime().optional(),
 });
 export type CreateRequestDto = z.infer<typeof createRequestSchema>;
+
+export const requestParamsSchema = z.strictObject({
+  id: z.uuid(),
+});
+export type RequestParams = z.infer<typeof requestParamsSchema>;
