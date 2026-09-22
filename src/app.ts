@@ -4,12 +4,15 @@ import { handleError } from "./middlewares/error-handler.middleware";
 import rateLimit from "express-rate-limit";
 import TooManyRequestsError from "./errors/too-many-requests.error";
 import { httpLogger } from "./middlewares/logger.middleware";
+import helmet from "helmet";
 
 process.loadEnvFile(".env");
 
 const app: Express = express();
 
 app.use(httpLogger);
+
+app.use(helmet());
 
 const rateLimiter = rateLimit({
   windowMs: 60 * 1000,
@@ -28,7 +31,7 @@ const rateLimiter = rateLimit({
 
 app.use(rateLimiter);
 
-app.use(express.json());
+app.use(express.json({ limit: process.env.REQUEST_SIZE_LIMIT || "1mb" }));
 app.use("/api", router);
 app.use(handleError);
 
