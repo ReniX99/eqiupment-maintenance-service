@@ -3,6 +3,7 @@ import ConflictError from "../errors/conflict.error";
 import NotFoundError from "../errors/not-found.error";
 import * as equipmentsRepository from "../repositories/equipments.repository";
 import * as requestsService from "../services/maintenance-requests.service";
+import * as weatherService from "../services/weather.service";
 import {
   CreateEquipmentDto,
   UpdateEquipmentDto,
@@ -137,4 +138,16 @@ export const getEquipmentRequests = (id: string) => {
   }
 
   return requestsService.getRequestsByEquipmentId(id);
+};
+
+export const getEquipmentWeatherForecast = async (id: string, date: string) => {
+  const equipment = equipmentsRepository.getEquipment(id);
+
+  if (!equipment) {
+    throw new NotFoundError("Equipment is not found");
+  }
+
+  const { latitude, longitude } = equipment.location;
+
+  return await weatherService.getForecast(latitude, longitude, date);
 };

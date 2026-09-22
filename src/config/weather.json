@@ -1,0 +1,6 @@
+{
+  "minTemperature": -15,
+  "maxTemperature": 35,
+  "precipitationSum": 3,
+  "windSpeed": 10
+}

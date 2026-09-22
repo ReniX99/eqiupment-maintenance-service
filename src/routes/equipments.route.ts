@@ -5,6 +5,7 @@ import {
   getEquipment,
   getEquipmentRequests,
   getEquipments,
+  getEquipmentWeatherForecast,
   updateEquipment,
 } from "../controllers/equipments.controller";
 import { validate } from "../middlewares/validate.middleware";
@@ -14,6 +15,7 @@ import {
   equipmentsQuerySchema,
   updateEquipmentSchema,
 } from "../schemas/equipments/equipments.schema";
+import { weatherQuerySchema } from "../schemas/weather/weather.schema";
 
 const router = Router();
 
@@ -32,5 +34,11 @@ router
 router
   .route("/:id/requests")
   .get(validate({ params: equipmentParamsSchema }), getEquipmentRequests);
+router
+  .route("/:id/weather")
+  .get(
+    validate({ params: equipmentParamsSchema, query: weatherQuerySchema }),
+    getEquipmentWeatherForecast,
+  );
 
 export default router;
