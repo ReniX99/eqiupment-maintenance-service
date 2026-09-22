@@ -6,6 +6,7 @@ import {
   EquipmentsQuery,
   UpdateEquipmentDto,
 } from "../schemas/equipments/equipments.schema";
+import { WeatherQuery } from "../schemas/weather/weather.schema";
 
 export const getEquipments = (
   req: Request,
@@ -89,4 +90,19 @@ export const getEquipmentRequests = (
   const requests = equipmentsService.getEquipmentRequests(id);
 
   res.json(requests);
+};
+
+export const getEquipmentWeatherForecast = async (
+  req: Request,
+  res: Response<{}, { params: EquipmentParams; query: WeatherQuery }>,
+) => {
+  const { id } = res.locals.params;
+  const { date } = res.locals.query;
+
+  const forecast = await equipmentsService.getEquipmentWeatherForecast(
+    id,
+    date,
+  );
+
+  res.json(forecast);
 };
