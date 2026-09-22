@@ -5,6 +5,7 @@ import rateLimit from "express-rate-limit";
 import TooManyRequestsError from "./errors/too-many-requests.error";
 import { httpLogger } from "./middlewares/logger.middleware";
 import helmet from "helmet";
+import cors from "cors";
 
 process.loadEnvFile(".env");
 
@@ -13,6 +14,7 @@ const app: Express = express();
 app.use(httpLogger);
 
 app.use(helmet());
+app.use(cors({ origin: process.env.CORS_ORIGIN }));
 
 const rateLimiter = rateLimit({
   windowMs: 60 * 1000,
