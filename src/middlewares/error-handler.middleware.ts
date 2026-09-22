@@ -1,6 +1,7 @@
 import { NextFunction, type Request, type Response } from "express";
 import HttpError from "../errors/http.error";
 import PayloadTooLargeError from "../errors/payload-too-large.error";
+import InternalServerError from "../errors/internal-server.error";
 
 export const handleError = (
   err: any,
@@ -8,12 +9,17 @@ export const handleError = (
   res: Response,
   next: NextFunction,
 ) => {
+  let error: HttpError;
+
   if (err.type === "entity.too.large") {
-    const error = new PayloadTooLargeError();
-    return res.status(error.statusCode).json({ ...error, requestId: req.id });
+    error = new PayloadTooLargeError();
+  } else if (err instanceof HttpError) {
+    error = err;
+  } else if (err instanceof Error) {
+    error = new InternalServerError(err.message);
+  } else {
+    error = new InternalServerError("Unknown error");
   }
 
-  if (err instanceof HttpError) {
-    return res.status(err.statusCode).json({ ...err, requestId: req.id });
-  }
+  return res.status(error.statusCode).json({ ...error, requestId: req.id });
 };

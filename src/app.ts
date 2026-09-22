@@ -34,7 +34,7 @@ const rateLimiter = rateLimit({
 
 app.use(rateLimiter);
 
-app.use(express.json({ limit: process.env.REQUEST_SIZE_LIMIT || "1mb" }));
+app.use(express.json({ limit: process.env.REQUEST_SIZE_LIMIT }));
 app.use("/api", router);
 app.use(handleNotFoundRoute);
 
