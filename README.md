@@ -14,7 +14,7 @@ REST API для учёта заявок на техническое обслуж
 
 ### 1. Клонирование репозитория
 ```bash
-git clone https://github.com/ReniX99/weather-digest-utility.git
+https://github.com/ReniX99/eqiupment-maintenance-service
 ```
 
 ### 2. Переход в директорию проекта
