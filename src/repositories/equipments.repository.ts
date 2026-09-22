@@ -1,29 +1,4 @@
-const equipments: Equipment[] = [
-  {
-    id: "7dcd84ea-1b05-4ba5-ac58-3695d867037c",
-    name: "Оборудование 1",
-    type: "turbine",
-    serialNumber: "E001",
-    location: {
-      latitude: 23.23,
-      longitude: 34.34,
-    },
-    status: "operational",
-    installedAt: "2026-09-18",
-  },
-  {
-    id: "91a83b0c-ff30-4567-b13a-d42ffa3d81c2",
-    name: "Оборудование 2",
-    type: "turbine",
-    serialNumber: "E002",
-    location: {
-      latitude: 32.23,
-      longitude: 17.34,
-    },
-    status: "maintenance",
-    installedAt: "2026-09-14",
-  },
-];
+const equipments: Equipment[] = [];
 
 export const getEquipments = (
   name: string | undefined,
