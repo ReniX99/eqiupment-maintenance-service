@@ -6,6 +6,7 @@ import TooManyRequestsError from "./errors/too-many-requests.error";
 import { httpLogger } from "./middlewares/logger.middleware";
 import helmet from "helmet";
 import cors from "cors";
+import { handleNotFoundRoute } from "./middlewares/not-found.middleware";
 
 process.loadEnvFile(".env");
 
@@ -35,6 +36,8 @@ app.use(rateLimiter);
 
 app.use(express.json({ limit: process.env.REQUEST_SIZE_LIMIT || "1mb" }));
 app.use("/api", router);
+app.use(handleNotFoundRoute);
+
 app.use(handleError);
 
 export default app;
