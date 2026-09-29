@@ -7,6 +7,7 @@ import { httpLogger } from "./middlewares/logger.middleware";
 import helmet from "helmet";
 import cors from "cors";
 import { handleNotFoundRoute } from "./middlewares/not-found.middleware";
+import { connect } from "./database/connection";
 
 process.loadEnvFile(".env");
 
@@ -37,6 +38,8 @@ app.use(rateLimiter);
 app.use(express.json({ limit: process.env.REQUEST_SIZE_LIMIT }));
 app.use("/api", router);
 app.use(handleNotFoundRoute);
+
+connect();
 
 app.use(handleError);
 
