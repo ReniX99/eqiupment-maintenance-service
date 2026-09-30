@@ -4,6 +4,7 @@ import {
   DataType,
   Default,
   ForeignKey,
+  HasMany,
   HasOne,
   Model,
   PrimaryKey,
@@ -12,6 +13,7 @@ import {
 } from "sequelize-typescript";
 import Site from "./site.model";
 import EquipmentPassport from "./equipment-passport.model";
+import MaintenanceRequest from "./maintenance-request.model";
 
 @Table({
   modelName: "equipments",
@@ -65,6 +67,9 @@ class Equipment extends Model {
 
   @HasOne(() => EquipmentPassport)
   declare equipmentPassport: EquipmentPassport | null;
+
+  @HasMany(() => MaintenanceRequest)
+  declare requests: MaintenanceRequest[];
 }
 
 export default Equipment;

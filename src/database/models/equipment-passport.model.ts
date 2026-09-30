@@ -4,12 +4,14 @@ import {
   DataType,
   Default,
   ForeignKey,
+  HasMany,
   Model,
   PrimaryKey,
   Table,
   Unique,
 } from "sequelize-typescript";
 import Equipment from "./equipment.model";
+import RequestAssignee from "./request-assignee.model";
 
 @Table({
   modelName: "equipment_passports",
@@ -52,6 +54,9 @@ class EquipmentPassport extends Model {
 
   @BelongsTo(() => Equipment)
   declare equipemnt: Equipment;
+
+  @HasMany(() => RequestAssignee)
+  declare requests: RequestAssignee[];
 }
 
 export default EquipmentPassport;
