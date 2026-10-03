@@ -16,6 +16,7 @@ import RequestAssignee from "./request-assignee.model";
 
 @Table({
   modelName: "maintenance_requests",
+  underscored: true,
 })
 class MaintenanceRequest extends Model {
   @PrimaryKey
@@ -55,12 +56,11 @@ class MaintenanceRequest extends Model {
   })
   declare status: StatusType;
 
-  @Column({ type: DataType.DATEONLY, field: "planned_at" })
+  @Column({ type: DataType.DATE, field: "planned_at" })
   declare plannedAt: string | null;
 
   @Column({
     type: DataType.STRING(100),
-    allowNull: false,
     validate: {
       len: [3, 100],
     },
