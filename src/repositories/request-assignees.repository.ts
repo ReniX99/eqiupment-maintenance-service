@@ -30,3 +30,28 @@ export const getRequestAssignees = async (
     transaction: t,
   });
 };
+
+export const getRequestAssignee = async (
+  requestId: string,
+  technicianId: string,
+) => {
+  return connection.transaction(async (t) => {
+    return RequestAssignee.findOne({
+      where: {
+        requestId,
+        technicianId,
+      },
+      transaction: t,
+    });
+  });
+};
+
+export const deleteRequestASsignee = async (id: string) => {
+  return connection.transaction(async (t) => {
+    return RequestAssignee.destroy({
+      where: {
+        id,
+      },
+    });
+  });
+};
