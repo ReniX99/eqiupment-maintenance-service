@@ -1,6 +1,7 @@
 import { Op } from "sequelize";
 import { connection } from "../database/connection";
 import MaintenanceRequest from "../database/models/maintenance-request.model";
+import RequestAssignee from "../database/models/request-assignee.model";
 
 const requests: MaintenanceRequest[] = [];
 
@@ -34,6 +35,14 @@ export const getRequest = async (
 ): Promise<MaintenanceRequest | null> => {
   return connection.transaction(async (t) => {
     return MaintenanceRequest.findByPk(id, {
+      include: [
+        {
+          model: RequestAssignee,
+          attributes: {
+            exclude: ["requestId"],
+          },
+        },
+      ],
       transaction: t,
     });
   });
@@ -107,6 +116,14 @@ export const getRequests = async (
       limit,
       offset: (page - 1) * limit,
       order: [[sortBy, order]],
+      include: [
+        {
+          model: RequestAssignee,
+          attributes: {
+            exclude: ["requestId"],
+          },
+        },
+      ],
       transaction: t,
     });
   });
