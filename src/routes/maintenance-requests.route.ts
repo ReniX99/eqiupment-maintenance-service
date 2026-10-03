@@ -15,6 +15,11 @@ import {
   updateRequestStatusSchema,
 } from "../schemas/maintenance-requests/maintenance-requests.schema";
 import { validate } from "../middlewares/validate.middleware";
+import {
+  addRequestAssigneeSchema,
+  addRequestAssigneesSchema,
+} from "../schemas/maintenance-requests/assignees.schema";
+import { addRequestAssignees } from "../controllers/request-assignees.controller";
 
 const router = Router();
 
@@ -30,6 +35,13 @@ router
     updateRequest,
   )
   .delete(validate({ params: requestParamsSchema }), deleteRequest);
+
+router
+  .route("/:id/assignees")
+  .post(
+    validate({ params: requestParamsSchema, body: addRequestAssigneesSchema }),
+    addRequestAssignees,
+  );
 
 router
   .route("/:id/status")
