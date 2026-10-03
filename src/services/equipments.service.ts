@@ -4,12 +4,16 @@ import NotFoundError from "../errors/not-found.error";
 import * as equipmentsRepository from "../repositories/equipments.repository";
 import * as requestsService from "../services/maintenance-requests.service";
 import * as weatherService from "../services/weather.service";
+import * as siteService from "../services/site.service";
+import * as equipmentPassportRepository from "../repositories/equipment-passports.repository";
 import {
   CreateEquipmentDto,
   UpdateEquipmentDto,
 } from "../schemas/equipments/equipments.schema";
+import { connection } from "../database/connection";
+import { ValidationError } from "sequelize";
 
-export const getEquipments = (
+export const getEquipments = async (
   name: string | undefined,
   status: string | undefined,
   type: string | undefined,
@@ -17,13 +21,10 @@ export const getEquipments = (
   maxInstalledAt: string | undefined,
   sortBy: "type" | "name" | "serialNumber" | "status" | "installedAt" | "id",
   order: "asc" | "desc",
-  page: number | undefined,
-  limit: number | undefined,
+  page: number,
+  limit: number,
 ) => {
-  const pageNumber = page || 1;
-  const limitNumber = limit || 10;
-
-  const { data, total } = equipmentsRepository.getEquipments(
+  const { rows: data, count: total } = await equipmentsRepository.getEquipments(
     name,
     status,
     type,
@@ -31,22 +32,22 @@ export const getEquipments = (
     maxInstalledAt,
     sortBy,
     order,
-    pageNumber,
-    limitNumber,
+    page,
+    limit,
   );
 
   return {
     data,
     metadata: {
       total,
-      page: pageNumber,
-      limit: limitNumber,
+      page,
+      limit,
     },
   };
 };
 
-export const getEquipment = (id: string) => {
-  const equipment = equipmentsRepository.getEquipment(id);
+export const getEquipment = async (id: string) => {
+  const equipment = await equipmentsRepository.getEquipment(id);
 
   if (!equipment) {
     throw new NotFoundError("Equipment is not found");
@@ -55,83 +56,129 @@ export const getEquipment = (id: string) => {
   return equipment;
 };
 
-export const createEquipment = (equipment: CreateEquipmentDto) => {
-  const serialNumber = equipment.serialNumber;
+export const createEquipment = async (equipment: CreateEquipmentDto) => {
+  const {
+    name,
+    type,
+    serialNumber,
+    status,
+    installedAt,
+    location,
+    siteId,
+    passport,
+  } = equipment;
+  const { latitude, longitude } = location;
 
   const existingEquipment =
-    equipmentsRepository.getEquipmentBySerialNumber(serialNumber);
+    await equipmentsRepository.getEquipmentBySerialNumber(serialNumber);
   if (existingEquipment) {
     throw new ConflictError("Equipment with same serialNumber already exists");
   }
 
-  const id = uuid.v4();
-  const equipmentModel: Equipment = {
-    id: id,
-    ...equipment,
-  };
+  if (siteId) {
+    await siteService.getSite(siteId);
+  }
 
-  equipmentsRepository.createEquipment(equipmentModel);
-  return equipmentModel;
+  return equipmentsRepository.createEquipment(
+    name,
+    type,
+    serialNumber,
+    latitude,
+    longitude,
+    status,
+    installedAt,
+    siteId,
+    passport,
+  );
 };
 
-export const updateEquipment = (id: string, equipment: UpdateEquipmentDto) => {
-  const equipmentModel = equipmentsRepository.getEquipment(id);
-  if (!equipmentModel) {
-    throw new NotFoundError("Equipment is not found");
-  }
+export const updateEquipment = async (
+  id: string,
+  equipment: UpdateEquipmentDto,
+) => {
+  const equipmentModel = await getEquipment(id);
 
-  const { name, type, serialNumber, location, status } = equipment;
-
-  if (name) {
-    equipmentModel.name = name;
-  }
-
-  if (type) {
-    equipmentModel.type = type;
-  }
+  const { name, type, serialNumber, location, status, siteId, passport } =
+    equipment;
 
   if (serialNumber) {
     const existingEquipment =
-      equipmentsRepository.getEquipmentBySerialNumber(serialNumber);
+      await equipmentsRepository.getEquipmentBySerialNumber(serialNumber);
 
     if (existingEquipment && existingEquipment.id !== equipmentModel.id) {
       throw new ConflictError(
         "Equipment with same serialNumber already exists",
       );
     }
-    equipmentModel.serialNumber = serialNumber;
   }
 
-  if (location) {
-    equipmentModel.location = location;
+  if (siteId) {
+    await siteService.getSite(siteId);
   }
 
-  if (status) {
-    equipmentModel.status = status;
-  }
+  const t = await connection.transaction();
+  try {
+    await equipmentsRepository.updateEquipment(
+      equipmentModel,
+      name,
+      type,
+      serialNumber,
+      location?.latitude,
+      location?.longitude,
+      status,
+      siteId,
+      t,
+    );
 
-  return equipmentsRepository.updateEquipment(id, equipmentModel);
+    if (passport) {
+      if (!equipmentModel.equipmentPassport) {
+        if (
+          passport.producer === undefined ||
+          passport.model === undefined ||
+          passport.power === undefined ||
+          passport.lastCheck === undefined
+        ) {
+          throw new ValidationError(
+            "New equipment passport must contain all fields",
+            [],
+          );
+        }
+
+        await equipmentPassportRepository.createPassport(passport, id, t);
+      } else {
+        await equipmentPassportRepository.updatePassport(passport, id, t);
+      }
+    }
+
+    await t.commit();
+
+    return getEquipment(id);
+  } catch (error) {
+    t.rollback();
+    throw error;
+  }
 };
 
-export const deleteEquipment = (id: string): void => {
+export const deleteEquipment = async (id: string) => {
   const equipment = equipmentsRepository.getEquipment(id);
 
   if (!equipment) {
     throw new NotFoundError("Equipment is not found");
   }
 
-  const unclosedRequests = requestsService.getUnclosedRequestsByEquipmentId(id);
+  const unclosedRequests =
+    await requestsService.getUnclosedRequestsByEquipmentId(id);
   if (unclosedRequests.length > 0) {
     throw new ConflictError(
       "Can't remove equipment with unclosed maintenance requests",
     );
   }
 
-  equipmentsRepository.deleteEquipment(id);
+  await equipmentsRepository.deleteEquipment(id);
 };
 
-export const getEquipmentRequests = (id: string) => {
-  const equipment = equipmentsRepository.getEquipment(id);
+export const getEquipmentRequests = async (id: string) => {
+  const equipment = await equipmentsRepository.getEquipment(id);
 
   if (!equipment) {
     throw new NotFoundError("Equipment is not found");
@@ -141,13 +188,13 @@ export const getEquipmentRequests = (id: string) => {
 };
 
 export const getEquipmentWeatherForecast = async (id: string, date: string) => {
-  const equipment = equipmentsRepository.getEquipment(id);
+  const equipment = await equipmentsRepository.getEquipment(id);
 
   if (!equipment) {
     throw new NotFoundError("Equipment is not found");
   }
 
-  const { latitude, longitude } = equipment.location;
+  const { latitude, longitude } = equipment.site;
 
   return await weatherService.getForecast(latitude, longitude, date);
 };

@@ -9,32 +9,23 @@ import * as requestsRepository from "../repositories/maintenance-requests.reposi
 import NotFoundError from "../errors/not-found.error";
 import ConflictError from "../errors/conflict.error";
 
-export const createRequest = (request: CreateRequestDto) => {
-  const equipmentId = request.equipmentId;
-  equipmentsService.getEquipment(equipmentId);
+export const createRequest = async (request: CreateRequestDto) => {
+  const { equipmentId, title, description, priority, plannedAt, author } =
+    request;
+  await equipmentsService.getEquipment(equipmentId);
 
-  const id = uuid.v4();
-  const now = new Date().toISOString();
-
-  const requestModel: MaintenanceRequest = {
-    id: id,
-    equipmentId: equipmentId,
-    title: request.title,
-    description: request.description,
-    priority: request.priority,
-    status: "new",
-    plannedAt: request.plannedAt ?? null,
-    createdAt: now,
-    updatedAt: now,
-  };
-
-  requestsRepository.createRequest(requestModel);
-
-  return requestModel;
+  return requestsRepository.createRequest(
+    equipmentId,
+    title,
+    description,
+    priority,
+    plannedAt,
+    author,
+  );
 };
 
-export const getRequest = (id: string) => {
-  const request = requestsRepository.getRequest(id);
+export const getRequest = async (id: string) => {
+  const request = await requestsRepository.getRequest(id);
 
   if (!request) {
     throw new NotFoundError("Maintenance request is not found");
@@ -43,7 +34,7 @@ export const getRequest = (id: string) => {
   return request;
 };
 
-export const getRequests = (
+export const getRequests = async (
   equipmentId: string | undefined,
   title: string | undefined,
   description: string | undefined,
@@ -64,13 +55,10 @@ export const getRequests = (
     | "createdAt"
     | "updatedAt",
   order: "asc" | "desc",
-  page: number | undefined,
-  limit: number | undefined,
+  page: number,
+  limit: number,
 ) => {
-  const pageNumber = page || 1;
-  const limitNumber = limit || 10;
-
-  const { data, total } = requestsRepository.getRequests(
+  const { rows: data, count: total } = await requestsRepository.getRequests(
     equipmentId,
     title,
     description,
@@ -82,60 +70,52 @@ export const getRequests = (
     maxCreatedAt,
     sortBy,
     order,
-    pageNumber,
-    limitNumber,
+    page,
+    limit,
   );
 
   return {
     data,
     metadata: {
       total,
-      page: pageNumber,
-      limit: limitNumber,
+      page: page,
+      limit: limit,
     },
   };
 };
 
-export const updateRequest = (id: string, request: UpdateRequestDto) => {
-  const requestModel = requestsRepository.getRequest(id);
+export const updateRequest = async (id: string, request: UpdateRequestDto) => {
+  const requestModel = await requestsRepository.getRequest(id);
   if (!requestModel) {
     throw new NotFoundError("Maintenance request is not found");
   }
 
-  const { equipmentId, title, description, priority, plannedAt } = request;
+  const { equipmentId, title, description, priority, plannedAt, author } =
+    request;
 
   if (equipmentId) {
-    equipmentsService.getEquipment(equipmentId);
-
-    requestModel.equipmentId = equipmentId;
+    await equipmentsService.getEquipment(equipmentId);
   }
 
-  if (title) {
-    requestModel.title = title;
-  }
-
-  if (description) {
-    requestModel.description = description;
-  }
-
-  if (priority) {
-    requestModel.priority = priority;
-  }
-
-  if (plannedAt) {
-    requestModel.plannedAt = plannedAt;
-  }
-
-  return requestsRepository.updateRequest(id, requestModel);
+  await requestsRepository.updateRequest(
+    requestModel,
+    equipmentId,
+    title,
+    description,
+    priority,
+    plannedAt,
+    author,
+  );
+  return requestModel;
 };
 
-export const updateRequestStatus = (
+export const updateRequestStatus = async (
   id: string,
   request: UpdateRequestStatusDto,
 ) => {
   const status = request.status;
 
-  const requestModel = requestsRepository.getRequest(id);
+  const requestModel = await requestsRepository.getRequest(id);
   if (!requestModel) {
     throw new NotFoundError("Maintenance request is not found");
   }
@@ -147,29 +127,29 @@ export const updateRequestStatus = (
     (status === "rejected" &&
       (currentStatus === "new" || currentStatus === "in_progress"))
   ) {
-    requestModel.status = status;
+    await requestsRepository.updateRequestStatus(requestModel, status);
   } else {
     throw new ConflictError(
       `Invalid status update: ${currentStatus} -> ${status}`,
     );
   }
 
-  return requestsRepository.updateRequest(id, requestModel);
+  return requestModel;
 };
 
-export const deleteRequest = (id: string) => {
-  const request = requestsRepository.getRequest(id);
+export const deleteRequest = async (id: string) => {
+  const request = await requestsRepository.getRequest(id);
   if (!request) {
     throw new NotFoundError("Maintenance request is not found");
   }
 
-  requestsRepository.deleteRequest(id);
+  await requestsRepository.deleteRequest(id);
 };
 
-export const getRequestsByEquipmentId = (equipmentId: string) => {
+export const getRequestsByEquipmentId = async (equipmentId: string) => {
   return requestsRepository.getRequestsByEquipmentId(equipmentId);
 };
 
-export const getUnclosedRequestsByEquipmentId = (equipmentId: string) => {
+export const getUnclosedRequestsByEquipmentId = async (equipmentId: string) => {
   return requestsRepository.getUnclosedRequests(equipmentId);
 };
