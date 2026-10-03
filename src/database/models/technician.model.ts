@@ -2,10 +2,12 @@ import {
   Column,
   DataType,
   Default,
+  HasMany,
   Model,
   PrimaryKey,
   Table,
 } from "sequelize-typescript";
+import RequestAssignee from "./request-assignee.model";
 
 @Table({
   modelName: "technicians",
@@ -37,6 +39,9 @@ class Technician extends Model {
     field: "employee_id",
   })
   declare employeeId: string;
+
+  @HasMany(() => RequestAssignee)
+  declare requests: RequestAssignee[];
 }
 
 export default Technician;
