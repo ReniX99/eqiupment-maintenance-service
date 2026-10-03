@@ -10,10 +10,11 @@ export const equipmentsQuerySchema = z.strictObject({
   maxInstalledAt: z.iso.date().optional(),
   sortBy: z
     .enum(["id", "name", "type", "serialNumber", "status", "installedAt"])
-    .optional(),
-  order: z.enum(["asc", "desc"]).optional(),
-  page: z.coerce.number().min(1).optional(),
-  limit: z.coerce.number().min(1).optional(),
+    .optional()
+    .default("id"),
+  order: z.enum(["asc", "desc"]).optional().default("asc"),
+  page: z.coerce.number().min(1).optional().default(1),
+  limit: z.coerce.number().min(1).optional().default(10),
 });
 export type EquipmentsQuery = z.infer<typeof equipmentsQuerySchema>;
 
@@ -32,6 +33,15 @@ export const createEquipmentSchema = z.strictObject({
   }),
   status: z.enum(["operational", "maintenance", "fault", "decommissioned"]),
   installedAt: z.iso.date(),
+  siteId: z.uuid().optional(),
+  passport: z
+    .strictObject({
+      producer: z.string().min(3).max(100),
+      model: z.string(),
+      power: z.number().min(0),
+      lastCheck: z.iso.date(),
+    })
+    .optional(),
 });
 export type CreateEquipmentDto = z.infer<typeof createEquipmentSchema>;
 
@@ -47,6 +57,15 @@ export const updateEquipmentSchema = z.strictObject({
     .optional(),
   status: z
     .enum(["operational", "maintenance", "fault", "decommissioned"])
+    .optional(),
+  siteId: z.uuid().optional(),
+  passport: z
+    .strictObject({
+      producer: z.string().min(3).max(100).optional(),
+      model: z.string().optional(),
+      power: z.number().min(0).optional(),
+      lastCheck: z.iso.date().optional(),
+    })
     .optional(),
 });
 export type UpdateEquipmentDto = z.infer<typeof updateEquipmentSchema>;

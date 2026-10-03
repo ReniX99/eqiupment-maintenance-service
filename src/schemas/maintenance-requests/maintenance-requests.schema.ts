@@ -6,6 +6,7 @@ export const createRequestSchema = z.strictObject({
   description: z.string().max(2000),
   priority: z.enum(["low", "medium", "high", "critical"]),
   plannedAt: z.iso.datetime().optional(),
+  author: z.string().min(3).max(100).optional(),
 });
 export type CreateRequestDto = z.infer<typeof createRequestSchema>;
 
@@ -36,10 +37,11 @@ export const requestsQuerySchema = z.strictObject({
       "createdAt",
       "updatedAt",
     ])
-    .optional(),
-  order: z.enum(["asc", "desc"]).optional(),
-  page: z.coerce.number().min(1).optional(),
-  limit: z.coerce.number().min(1).optional(),
+    .optional()
+    .default("id"),
+  order: z.enum(["asc", "desc"]).optional().default("asc"),
+  page: z.coerce.number().min(1).optional().default(1),
+  limit: z.coerce.number().min(1).optional().default(10),
 });
 export type RequestsQuery = z.infer<typeof requestsQuerySchema>;
 
@@ -49,6 +51,7 @@ export const updateRequestSchema = z.strictObject({
   description: z.string().max(2000).optional(),
   priority: z.enum(["low", "medium", "high", "critical"]).optional(),
   plannedAt: z.iso.datetime().optional(),
+  author: z.string().min(3).max(100).optional(),
 });
 export type UpdateRequestDto = z.infer<typeof updateRequestSchema>;
 

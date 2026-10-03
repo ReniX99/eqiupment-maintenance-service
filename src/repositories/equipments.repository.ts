@@ -1,6 +1,16 @@
+import { Op, Transaction } from "sequelize";
+import { connection } from "../database/connection";
+import EquipmentPassport from "../database/models/equipment-passport.model";
+import Equipment from "../database/models/equipment.model";
+import Site from "../database/models/site.model";
+import {
+  TCreateEquipmentPassport,
+  TUpdateEquipmentPassport,
+} from "../types/equipment-passport.type";
+
 const equipments: Equipment[] = [];
 
-export const getEquipments = (
+export const getEquipments = async (
   name: string | undefined,
   status: string | undefined,
   type: string | undefined,
@@ -11,69 +21,168 @@ export const getEquipments = (
   page: number,
   limit: number,
 ) => {
-  const filteredEquipments = equipments.filter((eq) => {
-    if (
-      name &&
-      !eq.name.toLocaleLowerCase().includes(String(name).toLocaleLowerCase())
-    )
-      return false;
-
-    if (status && eq.status !== status) return false;
-
-    if (type && eq.type !== type) return false;
-
-    if (minInstalledAt && eq.installedAt < minInstalledAt) return false;
-    if (maxInstalledAt && eq.installedAt > maxInstalledAt) return false;
-
-    return true;
+  return connection.transaction(async (t) => {
+    return Equipment.findAndCountAll({
+      where: {
+        ...(name !== undefined && {
+          name: {
+            [Op.iLike]: `%${name}%`,
+          },
+        }),
+        ...(status !== undefined && { status }),
+        ...(type !== undefined && { type }),
+        ...(minInstalledAt !== undefined || maxInstalledAt !== undefined
+          ? {
+              installedAt: {
+                ...(minInstalledAt !== undefined && {
+                  [Op.gte]: minInstalledAt,
+                }),
+                ...(maxInstalledAt !== undefined && {
+                  [Op.lte]: maxInstalledAt,
+                }),
+              },
+            }
+          : {}),
+      },
+      limit,
+      offset: (page - 1) * limit,
+      include: [Site, EquipmentPassport],
+      order: [[sortBy, order]],
+      transaction: t,
+    });
   });
-
-  const sortOrder = order === "asc" ? 1 : -1;
-
-  filteredEquipments.sort((a, b) => {
-    const aValue = a[sortBy];
-    const bValue = b[sortBy];
-
-    if (aValue < bValue) return -1 * sortOrder;
-    if (aValue > bValue) return 1 * sortOrder;
-
-    return 0;
-  });
-
-  const start = (page - 1) * limit;
-  const paginatedEquipments = filteredEquipments.slice(start, start + limit);
-
-  return {
-    data: paginatedEquipments,
-    total: filteredEquipments.length,
-  };
 };
 
-export const getEquipment = (id: string): Equipment | undefined => {
-  return equipments.find((eq) => eq.id === id);
+export const getEquipment = async (id: string): Promise<Equipment | null> => {
+  return connection.transaction(async (t) => {
+    return Equipment.findByPk(id, {
+      include: [Site, EquipmentPassport],
+      transaction: t,
+    });
+  });
 };
 
-export const getEquipmentBySerialNumber = (
+export const getEquipmentBySerialNumber = async (
   serialNumber: string,
-): Equipment | undefined => {
-  return equipments.find((eq) => eq.serialNumber === serialNumber);
+): Promise<Equipment | null> => {
+  return connection.transaction(async (t) => {
+    return Equipment.findOne({
+      where: {
+        serialNumber,
+      },
+      transaction: t,
+    });
+  });
 };
 
-export const createEquipment = (equipment: Equipment): void => {
-  equipments.push(equipment);
+export const createEquipment = async (
+  name: string,
+  type: string,
+  serialNumber: string,
+  latitude: number,
+  longitude: number,
+  status: string,
+  installedAt: string,
+  siteId: string | undefined,
+  passport: TCreateEquipmentPassport | undefined,
+): Promise<Equipment> => {
+  return connection.transaction(async (t) => {
+    let equipment;
+
+    if (siteId) {
+      equipment = await Equipment.create(
+        {
+          name,
+          type,
+          serialNumber,
+          status,
+          installedAt,
+          siteId,
+        },
+        {
+          transaction: t,
+        },
+      );
+    } else {
+      equipment = await Equipment.create(
+        {
+          name,
+          type,
+          serialNumber,
+          status,
+          installedAt,
+          site: {
+            latitude,
+            longitude,
+          },
+        },
+        {
+          include: [Site],
+          transaction: t,
+        },
+      );
+    }
+
+    if (passport) {
+      const { producer, model, power, lastCheck } = passport;
+      await EquipmentPassport.create(
+        {
+          producer,
+          model,
+          power,
+          lastCheck,
+          equipmentId: equipment.id,
+        },
+        { transaction: t },
+      );
+    }
+
+    return equipment;
+  });
 };
 
-export const updateEquipment = (
-  id: string,
+export const updateEquipment = async (
   equipment: Equipment,
-): Equipment => {
-  const index = equipments.findIndex((eq) => eq.id === id);
-  equipments[index] = equipment;
+  name: string | undefined,
+  type: string | undefined,
+  serialNumber: string | undefined,
+  latitude: number | undefined,
+  longitude: number | undefined,
+  status: string | undefined,
+  siteId: string | undefined,
+  t: Transaction,
+): Promise<void> => {
+  await equipment.update(
+    {
+      name,
+      type,
+      status,
+      serialNumber,
+      siteId,
+    },
+    {
+      transaction: t,
+    },
+  );
 
-  return equipment;
+  if (!siteId) {
+    await equipment.site.update(
+      {
+        latitude,
+        longitude,
+      },
+      {
+        transaction: t,
+      },
+    );
+  }
 };
 
-export const deleteEquipment = (id: string): void => {
-  const index = equipments.findIndex((eq) => eq.id === id);
-  equipments.splice(index, 1);
+export const deleteEquipment = async (id: string) => {
+  await connection.transaction(async (t) => {
+    await Equipment.destroy({
+      where: { id },
+      transaction: t,
+    });
+  });
 };

@@ -1,6 +1,7 @@
 import { Sequelize } from "sequelize-typescript";
 
-const connection = new Sequelize(process.env.DATABASE_URL!, {
+process.loadEnvFile(".env");
+export const connection = new Sequelize(process.env.DATABASE_URL!, {
   models: [__dirname + "/models"],
   logging: false,
 });
