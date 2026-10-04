@@ -2,6 +2,13 @@ import { connection } from "../database/connection";
 import NotFoundError from "../errors/not-found.error";
 import * as sitesRepository from "../repositories/site.repository";
 
+export const getSite = async (id: string) => {
+  const site = await sitesRepository.getSite(id);
+
+  if (!site) throw new NotFoundError("Site is not found");
+  return site;
+};
+
 export const getSiteSummary = async (id: string) => {
   const site = await sitesRepository.getSite(id);
   if (!site) throw new NotFoundError("Site is not found");
