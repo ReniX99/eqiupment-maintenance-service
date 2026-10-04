@@ -9,3 +9,10 @@ export const addRequestAssigneeSchema = z.strictObject({
 export const addRequestAssigneesSchema = z.array(addRequestAssigneeSchema);
 
 export type AddRequestAssignDto = z.infer<typeof addRequestAssigneeSchema>;
+
+export const requestAssigneeParamsSchema = z.strictObject({
+  id: z.uuid(),
+  userId: z.uuid(),
+});
+
+export type RequestAssigneeParams = z.infer<typeof requestAssigneeParamsSchema>;

@@ -52,3 +52,21 @@ export const addRequestAssignees = async (
     );
   });
 };
+
+export const deleteRequestAssignee = async (
+  requestId: string,
+  technicianId: string,
+) => {
+  await requestsService.getRequest(requestId);
+
+  const technician = await techniciansRepository.getTechnician(technicianId);
+  if (!technician) throw new NotFoundError("Technician not found");
+
+  const assignee = await requestAssigneesRepository.getRequestAssignee(
+    requestId,
+    technicianId,
+  );
+  if (!assignee) throw new NotFoundError("Request Assignee not found");
+
+  return requestAssigneesRepository.deleteRequestASsignee(assignee.id);
+};

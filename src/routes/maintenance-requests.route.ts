@@ -18,8 +18,12 @@ import { validate } from "../middlewares/validate.middleware";
 import {
   addRequestAssigneeSchema,
   addRequestAssigneesSchema,
+  requestAssigneeParamsSchema,
 } from "../schemas/maintenance-requests/assignees.schema";
-import { addRequestAssignees } from "../controllers/request-assignees.controller";
+import {
+  addRequestAssignees,
+  deleteRequestAssignee,
+} from "../controllers/request-assignees.controller";
 
 const router = Router();
 
@@ -41,6 +45,13 @@ router
   .post(
     validate({ params: requestParamsSchema, body: addRequestAssigneesSchema }),
     addRequestAssignees,
+  );
+
+router
+  .route("/:id/assignees/:userId")
+  .delete(
+    validate({ params: requestAssigneeParamsSchema }),
+    deleteRequestAssignee,
   );
 
 router
