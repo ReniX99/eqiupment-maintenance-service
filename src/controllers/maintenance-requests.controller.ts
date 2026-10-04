@@ -92,13 +92,13 @@ export const updateRequestStatus = async (
   res.status(200).json(request);
 };
 
-export const deleteRequest = (
+export const deleteRequest = async (
   req: Request,
   res: Response<{}, { params: RequestParams }>,
 ) => {
   const { id } = res.locals.params;
 
-  requestsService.deleteRequest(id);
+  await requestsService.deleteRequest(id);
 
   res.sendStatus(200);
 };
