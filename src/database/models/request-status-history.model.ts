@@ -53,14 +53,12 @@ class RequestStatusHistory extends Model {
 
   @Column({
     type: DataType.STRING(100),
-    allowNull: false,
     validate: { len: [3, 100] },
   })
   declare author: string;
 
   @Column({
     type: DataType.STRING(2000),
-    allowNull: false,
   })
   declare comment: string;
 }
