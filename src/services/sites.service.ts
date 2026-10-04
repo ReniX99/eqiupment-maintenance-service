@@ -2,6 +2,13 @@ import { connection } from "../database/connection";
 import NotFoundError from "../errors/not-found.error";
 import * as sitesRepository from "../repositories/site.repository";
 
+export const getSite = async (id: string) => {
+  const site = await sitesRepository.getSite(id);
+
+  if (!site) throw new NotFoundError("Site is not found");
+  return site;
+};
+
 export const getSiteSummary = async (id: string) => {
   const site = await sitesRepository.getSite(id);
   if (!site) throw new NotFoundError("Site is not found");
@@ -37,10 +44,10 @@ export const getSiteSummary = async (id: string) => {
           return acc;
         },
         {
-          new: { low: 0, medium: 0, high: 0 },
-          in_progress: { low: 0, medium: 0, high: 0 },
-          done: { low: 0, medium: 0, high: 0 },
-          rejected: { low: 0, medium: 0, high: 0 },
+          new: { low: 0, medium: 0, high: 0, critical: 0 },
+          in_progress: { low: 0, medium: 0, high: 0, critical: 0 },
+          done: { low: 0, medium: 0, high: 0, critical: 0 },
+          rejected: { low: 0, medium: 0, high: 0, critical: 0 },
         },
       ),
       avgHours,

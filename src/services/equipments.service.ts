@@ -4,7 +4,7 @@ import NotFoundError from "../errors/not-found.error";
 import * as equipmentsRepository from "../repositories/equipments.repository";
 import * as requestsService from "../services/maintenance-requests.service";
 import * as weatherService from "../services/weather.service";
-import * as siteService from "../services/site.service";
+import * as sitesService from "../services/sites.service";
 import * as equipmentPassportRepository from "../repositories/equipment-passports.repository";
 import {
   CreateEquipmentDto,
@@ -76,7 +76,7 @@ export const createEquipment = async (equipment: CreateEquipmentDto) => {
   }
 
   if (siteId) {
-    await siteService.getSite(siteId);
+    await sitesService.getSite(siteId);
   }
 
   return equipmentsRepository.createEquipment(
@@ -113,7 +113,7 @@ export const updateEquipment = async (
   }
 
   if (siteId) {
-    await siteService.getSite(siteId);
+    await sitesService.getSite(siteId);
   }
 
   const t = await connection.transaction();
