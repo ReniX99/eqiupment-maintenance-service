@@ -37,10 +37,10 @@ export const getSiteSummary = async (id: string) => {
           return acc;
         },
         {
-          new: { low: 0, medium: 0, high: 0 },
-          in_progress: { low: 0, medium: 0, high: 0 },
-          done: { low: 0, medium: 0, high: 0 },
-          rejected: { low: 0, medium: 0, high: 0 },
+          new: { low: 0, medium: 0, high: 0, critical: 0 },
+          in_progress: { low: 0, medium: 0, high: 0, critical: 0 },
+          done: { low: 0, medium: 0, high: 0, critical: 0 },
+          rejected: { low: 0, medium: 0, high: 0, critical: 0 },
         },
       ),
       avgHours,
