@@ -57,5 +57,7 @@ export type UpdateRequestDto = z.infer<typeof updateRequestSchema>;
 
 export const updateRequestStatusSchema = z.strictObject({
   status: z.enum(["in_progress", "done", "rejected"]),
+  author: z.string().min(3).max(100).optional(),
+  comment: z.string().max(2000).optional(),
 });
 export type UpdateRequestStatusDto = z.infer<typeof updateRequestStatusSchema>;

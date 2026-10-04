@@ -4,6 +4,7 @@ import {
   deleteRequest,
   getRequest,
   getRequests,
+  getRequestStatusHistory,
   updateRequest,
   updateRequestStatus,
 } from "../controllers/maintenance-requests.controller";
@@ -53,6 +54,10 @@ router
     validate({ params: requestAssigneeParamsSchema }),
     deleteRequestAssignee,
   );
+
+router
+  .route("/:id/history")
+  .get(validate({ params: requestParamsSchema }), getRequestStatusHistory);
 
 router
   .route("/:id/status")

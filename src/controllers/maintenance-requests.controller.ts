@@ -7,6 +7,7 @@ import {
   UpdateRequestStatusDto,
 } from "../schemas/maintenance-requests/maintenance-requests.schema";
 import * as requestsService from "../services/maintenance-requests.service";
+import * as requestStatusHistoryService from "../services/request-status-history.service";
 
 export const createRequest = async (
   req: Request,
@@ -100,4 +101,15 @@ export const deleteRequest = (
   requestsService.deleteRequest(id);
 
   res.sendStatus(200);
+};
+
+export const getRequestStatusHistory = async (
+  req: Request,
+  res: Response<{}, { params: RequestParams }>,
+) => {
+  const { id } = res.locals.params;
+
+  const statusHistory =
+    await requestStatusHistoryService.getRequestStatusHistory(id);
+  res.status(200).json(statusHistory);
 };

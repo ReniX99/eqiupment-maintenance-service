@@ -6,8 +6,11 @@ import {
 } from "../schemas/maintenance-requests/maintenance-requests.schema";
 import * as equipmentsService from "../services/equipments.service";
 import * as requestsRepository from "../repositories/maintenance-requests.repository";
+import * as requestStatusHistoryRepository from "../repositories/request-status-history.repository";
+import * as requestAssigneesRepository from "../repositories/request-assignees.repository";
 import NotFoundError from "../errors/not-found.error";
 import ConflictError from "../errors/conflict.error";
+import { connection } from "../database/connection";
 
 export const createRequest = async (request: CreateRequestDto) => {
   const { equipmentId, title, description, priority, plannedAt, author } =
@@ -113,7 +116,7 @@ export const updateRequestStatus = async (
   id: string,
   request: UpdateRequestStatusDto,
 ) => {
-  const status = request.status;
+  const { status, author, comment } = request;
 
   const requestModel = await requestsRepository.getRequest(id);
   if (!requestModel) {
@@ -127,7 +130,29 @@ export const updateRequestStatus = async (
     (status === "rejected" &&
       (currentStatus === "new" || currentStatus === "in_progress"))
   ) {
-    await requestsRepository.updateRequestStatus(requestModel, status);
+    await connection.transaction(async (t) => {
+      if (status === "in_progress") {
+        const assignees = await requestAssigneesRepository.getRequestAssignees(
+          id,
+          t,
+        );
+        if (assignees.length === 0) {
+          throw new ConflictError(
+            "No assignees to change request to 'in_progress' status",
+          );
+        }
+      }
+
+      await requestsRepository.updateRequestStatus(requestModel, status, t);
+      await requestStatusHistoryRepository.addRequestStatusChange(
+        id,
+        currentStatus,
+        status,
+        author,
+        comment,
+        t,
+      );
+    });
   } else {
     throw new ConflictError(
       `Invalid status update: ${currentStatus} -> ${status}`,

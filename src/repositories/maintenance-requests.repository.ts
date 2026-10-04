@@ -1,4 +1,4 @@
-import { Op } from "sequelize";
+import { Op, Transaction } from "sequelize";
 import { connection } from "../database/connection";
 import MaintenanceRequest from "../database/models/maintenance-request.model";
 import RequestAssignee from "../database/models/request-assignee.model";
@@ -158,15 +158,14 @@ export const updateRequest = async (
 export const updateRequestStatus = async (
   request: MaintenanceRequest,
   status: string,
+  t: Transaction,
 ) => {
-  await connection.transaction(async (t) => {
-    await request.update(
-      {
-        status,
-      },
-      { transaction: t },
-    );
-  });
+  return await request.update(
+    {
+      status,
+    },
+    { transaction: t },
+  );
 };
 
 export const deleteRequest = async (id: string) => {
