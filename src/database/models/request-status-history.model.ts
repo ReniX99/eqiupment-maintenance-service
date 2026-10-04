@@ -12,7 +12,7 @@ import MaintenanceRequest from "./maintenance-request.model";
 import { statuses, StatusType } from "../../types/status.type";
 
 @Table({
-  modelName: "request_status_history",
+  tableName: "request_status_history",
   createdAt: true,
   updatedAt: false,
   hooks: {
@@ -23,6 +23,7 @@ import { statuses, StatusType } from "../../types/status.type";
       throw new Error("Request status history delete is forbidden");
     },
   },
+  underscored: true,
 })
 class RequestStatusHistory extends Model {
   @PrimaryKey
