@@ -90,6 +90,8 @@ npm run dev
 ## Таблица эндпоинтов
 
 <img width="841" height="618" alt="image" src="https://github.com/user-attachments/assets/94e789ba-2c27-4bf2-a457-b3fc6b2b15e7" />
+<img width="1172" height="329" alt="image" src="https://github.com/user-attachments/assets/76a28e88-bd8b-493e-b766-454e221371d1" />
+
 
 ## Формат ошибки
 
