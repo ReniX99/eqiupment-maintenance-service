@@ -1084,12 +1084,105 @@
     },
     {
       "name": "Update Request",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200)\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Response body has 'id' field\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"id\")\r",
+              "})\r",
+              "\r",
+              "pm.test(\"'Id' field is UUID v4\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"id\")\r",
+              "    pm.expect(response.id).to.match(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Response body has 'equipmentId' field\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"equipmentId\")\r",
+              "})\r",
+              "\r",
+              "pm.test(\"'EqiipmentId' field is UUID v4\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"equipmentId\")\r",
+              "    pm.expect(response.equipmentId).to.match(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Response body has 'title' field\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"title\")\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Response body has 'description' field\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"description\")\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Response body has 'priority' field\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"priority\")\r",
+              "})\r",
+              "\r",
+              "pm.test(\"'Type' field contains valid type\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"priority\")\r",
+              "    pm.expect(response.priority).to.be.oneOf([\"low\", \"medium\", \"high\", \"critical\"])\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Response body has 'status' field\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"status\")\r",
+              "})\r",
+              "\r",
+              "pm.test(\"'Status' field contains valid status\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"status\")\r",
+              "    pm.expect(response.status).to.be.oneOf([\"new\", \"in_progress\", \"done\", \"rejected\"])\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Response body has 'createdAt' field\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"createdAt\")\r",
+              "})\r",
+              "\r",
+              "pm.test(\"'CreatedAt' field is ISO datetime\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"createdAt\")\r",
+              "    pm.expect(response.createdAt).to.match(/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{3})?Z$/)\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Response body has 'updatedAt' field\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"updatedAt\")\r",
+              "})\r",
+              "\r",
+              "pm.test(\"'UpdatedAt' field is ISO datetime\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"updatedAt\")\r",
+              "    pm.expect(response.updatedAt).to.match(/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{3})?Z$/)\r",
+              "})\r",
+              "\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
       "request": {
         "method": "PATCH",
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n    \"equipmentId\": \"7dcd84ea-1b05-4ba5-ac58-3695d867037c\",\r\n    \"title\": \"тест тайтл\",\r\n    \"description\": \"тест описание\",\r\n    \"priority\": \"critical\",\r\n    \"plannedAt\": \"2026-09-21T14:00:00Z\"\r\n}",
+          "raw": "{\r\n    \"equipmentId\": \"c45a03df-0102-4180-a1d7-41dfbb36cabc\"\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -1097,13 +1190,13 @@
           }
         },
         "url": {
-          "raw": "{{url}}/requests/8f05c526-089f-4090-8c23-75532b0e171d",
+          "raw": "{{url}}/requests/{{id}}",
           "host": [
             "{{url}}"
           ],
           "path": [
             "requests",
-            "8f05c526-089f-4090-8c23-75532b0e171d"
+            "{{id}}"
           ]
         }
       },
@@ -1511,6 +1604,106 @@
     },
     {
       "name": "Update Request Status",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200)\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Response body has 'id' field\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"id\")\r",
+              "})\r",
+              "\r",
+              "pm.test(\"'Id' field is UUID v4\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"id\")\r",
+              "    pm.expect(response.id).to.match(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Response body has 'equipmentId' field\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"equipmentId\")\r",
+              "})\r",
+              "\r",
+              "pm.test(\"'EqiipmentId' field is UUID v4\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"equipmentId\")\r",
+              "    pm.expect(response.equipmentId).to.match(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Response body has 'title' field\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"title\")\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Response body has 'description' field\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"description\")\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Response body has 'priority' field\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"priority\")\r",
+              "})\r",
+              "\r",
+              "pm.test(\"'Type' field contains valid type\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"priority\")\r",
+              "    pm.expect(response.priority).to.be.oneOf([\"low\", \"medium\", \"high\", \"critical\"])\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Response body has 'status' field\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"status\")\r",
+              "})\r",
+              "\r",
+              "pm.test(\"'Status' field contains valid status\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"status\")\r",
+              "    pm.expect(response.status).to.be.oneOf([\"new\", \"in_progress\", \"done\", \"rejected\"])\r",
+              "})\r",
+              "\r",
+              "pm.test(\"New status matches sent stauts\", function () {\r",
+              "    const request = JSON.parse(pm.request.body.raw)\r",
+              "    const response = pm.response.json()\r",
+              "\r",
+              "    pm.expect(response.status).to.equal(request.status)\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Response body has 'createdAt' field\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"createdAt\")\r",
+              "})\r",
+              "\r",
+              "pm.test(\"'CreatedAt' field is ISO datetime\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"createdAt\")\r",
+              "    pm.expect(response.createdAt).to.match(/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{3})?Z$/)\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Response body has 'updatedAt' field\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"updatedAt\")\r",
+              "})\r",
+              "\r",
+              "pm.test(\"'UpdatedAt' field is ISO datetime\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.property(\"updatedAt\")\r",
+              "    pm.expect(response.updatedAt).to.match(/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{3})?Z$/)\r",
+              "})\r",
+              "\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
       "request": {
         "method": "PATCH",
         "header": [],
@@ -1524,13 +1717,13 @@
           }
         },
         "url": {
-          "raw": "{{url}}/requests/eb8bd8c9-0f50-4db4-bc40-23e786fa541a/status",
+          "raw": "{{url}}/requests/{{id}}/status",
           "host": [
             "{{url}}"
           ],
           "path": [
             "requests",
-            "eb8bd8c9-0f50-4db4-bc40-23e786fa541a",
+            "{{id}}",
             "status"
           ]
         }
@@ -2205,6 +2398,140 @@
           ],
           "cookie": [],
           "body": "{\n    \"message\": \"Invalid status update: new -> done\",\n    \"statusCode\": 409,\n    \"details\": null,\n    \"requestId\": \"1e29e08c-61b0-4eb8-b559-82599642b865\"\n}"
+        },
+        {
+          "name": "409: Ошибка при переводе заявки в in_progress из-за отсутствия бригады",
+          "originalRequest": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"status\": \"in_progress\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/requests/{{id}}/status",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "requests",
+                "{{id}}",
+                "status"
+              ]
+            }
+          },
+          "status": "Conflict",
+          "code": 409,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "X-Request-Id",
+              "value": "98dbd8bb-f4b3-4478-a785-a9fd8a0e00a0"
+            },
+            {
+              "key": "Content-Security-Policy",
+              "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            },
+            {
+              "key": "Cross-Origin-Opener-Policy",
+              "value": "same-origin"
+            },
+            {
+              "key": "Cross-Origin-Resource-Policy",
+              "value": "same-origin"
+            },
+            {
+              "key": "Origin-Agent-Cluster",
+              "value": "?1"
+            },
+            {
+              "key": "Referrer-Policy",
+              "value": "no-referrer"
+            },
+            {
+              "key": "Strict-Transport-Security",
+              "value": "max-age=31536000; includeSubDomains"
+            },
+            {
+              "key": "X-Content-Type-Options",
+              "value": "nosniff"
+            },
+            {
+              "key": "X-DNS-Prefetch-Control",
+              "value": "off"
+            },
+            {
+              "key": "X-Download-Options",
+              "value": "noopen"
+            },
+            {
+              "key": "X-Frame-Options",
+              "value": "SAMEORIGIN"
+            },
+            {
+              "key": "X-Permitted-Cross-Domain-Policies",
+              "value": "none"
+            },
+            {
+              "key": "X-XSS-Protection",
+              "value": "0"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "http://localhost:5173"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "RateLimit-Policy",
+              "value": "100;w=60"
+            },
+            {
+              "key": "RateLimit-Limit",
+              "value": "100"
+            },
+            {
+              "key": "RateLimit-Remaining",
+              "value": "96"
+            },
+            {
+              "key": "RateLimit-Reset",
+              "value": "18"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "151"
+            },
+            {
+              "key": "ETag",
+              "value": "W/\"97-BSSnd0GjWULt5fwY0CeNHP5nqhY\""
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 04 Oct 2026 19:53:51 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"message\": \"No assignees to change request to 'in_progress' status\",\n    \"statusCode\": 409,\n    \"details\": null,\n    \"requestId\": \"98dbd8bb-f4b3-4478-a785-a9fd8a0e00a0\"\n}"
         }
       ]
     },
@@ -2474,12 +2801,932 @@
           "body": "{\n    \"message\": \"Maintenance request is not found\",\n    \"statusCode\": 404,\n    \"details\": null,\n    \"requestId\": \"b8a49042-3e6f-4aaf-b8b6-bd5d9b516df6\"\n}"
         }
       ]
+    },
+    {
+      "name": "Assign Technicians On Request",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Response body is array\", function () {\r",
+              "    const response = pm.response.json()\r",
+              "    pm.expect(response).to.be.an(\"array\");\r",
+              "})\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "[\r\n    {\r\n        \"technicianId\": \"0f77f981-490d-4259-910a-c5b1aaf787ae\",\r\n        \"role\": \"member\",\r\n        \"hours\": 23\r\n    },\r\n    {\r\n        \"technicianId\": \"cec9954a-f580-499e-9944-2fd68a96f766\",\r\n        \"role\": \"lead\",\r\n        \"hours\": 33\r\n    }\r\n]",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url}}/requests/{{id}}/assignees",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "requests",
+            "{{id}}",
+            "assignees"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "201: Успешное назначение бригады на заявку",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "[\r\n    {\r\n        \"technicianId\": \"0f77f981-490d-4259-910a-c5b1aaf787ae\",\r\n        \"role\": \"member\",\r\n        \"hours\": 23\r\n    },\r\n    {\r\n        \"technicianId\": \"cec9954a-f580-499e-9944-2fd68a96f766\",\r\n        \"role\": \"lead\",\r\n        \"hours\": 33\r\n    }\r\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/requests/{{id}}/assignees",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "requests",
+                "{{id}}",
+                "assignees"
+              ]
+            }
+          },
+          "status": "Created",
+          "code": 201,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "X-Request-Id",
+              "value": "37981ec7-cb4e-433e-abe1-c55f5da239a5"
+            },
+            {
+              "key": "Content-Security-Policy",
+              "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            },
+            {
+              "key": "Cross-Origin-Opener-Policy",
+              "value": "same-origin"
+            },
+            {
+              "key": "Cross-Origin-Resource-Policy",
+              "value": "same-origin"
+            },
+            {
+              "key": "Origin-Agent-Cluster",
+              "value": "?1"
+            },
+            {
+              "key": "Referrer-Policy",
+              "value": "no-referrer"
+            },
+            {
+              "key": "Strict-Transport-Security",
+              "value": "max-age=31536000; includeSubDomains"
+            },
+            {
+              "key": "X-Content-Type-Options",
+              "value": "nosniff"
+            },
+            {
+              "key": "X-DNS-Prefetch-Control",
+              "value": "off"
+            },
+            {
+              "key": "X-Download-Options",
+              "value": "noopen"
+            },
+            {
+              "key": "X-Frame-Options",
+              "value": "SAMEORIGIN"
+            },
+            {
+              "key": "X-Permitted-Cross-Domain-Policies",
+              "value": "none"
+            },
+            {
+              "key": "X-XSS-Protection",
+              "value": "0"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "http://localhost:5173"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "RateLimit-Policy",
+              "value": "100;w=60"
+            },
+            {
+              "key": "RateLimit-Limit",
+              "value": "100"
+            },
+            {
+              "key": "RateLimit-Remaining",
+              "value": "99"
+            },
+            {
+              "key": "RateLimit-Reset",
+              "value": "60"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "355"
+            },
+            {
+              "key": "ETag",
+              "value": "W/\"163-H70koMZEh56gqybSgTaFOwKKCd4\""
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 04 Oct 2026 19:50:39 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n    {\n        \"id\": \"ab1f599a-3a17-429e-b987-b265219506be\",\n        \"technicianId\": \"0f77f981-490d-4259-910a-c5b1aaf787ae\",\n        \"role\": \"member\",\n        \"hours\": 23,\n        \"requestId\": \"341dbc9b-f1d2-43cf-b8d4-802558e408ee\"\n    },\n    {\n        \"id\": \"07c6f0b0-ea2c-4b93-b65c-d5d97dcc2955\",\n        \"technicianId\": \"cec9954a-f580-499e-9944-2fd68a96f766\",\n        \"role\": \"lead\",\n        \"hours\": 33,\n        \"requestId\": \"341dbc9b-f1d2-43cf-b8d4-802558e408ee\"\n    }\n]"
+        },
+        {
+          "name": "404: Назначение несуществующего специалиста",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "[\r\n    {\r\n        \"technicianId\": \"0f77f981-490d-4259-910a-c5b1abf787ae\",\r\n        \"role\": \"member\",\r\n        \"hours\": 23\r\n    },\r\n    {\r\n        \"technicianId\": \"cec9954a-f580-499e-9944-2fd68a96f766\",\r\n        \"role\": \"lead\",\r\n        \"hours\": 33\r\n    }\r\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/requests/{{id}}/assignees",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "requests",
+                "{{id}}",
+                "assignees"
+              ]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "X-Request-Id",
+              "value": "aa795427-da84-4308-ae11-8b062834d63a"
+            },
+            {
+              "key": "Content-Security-Policy",
+              "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            },
+            {
+              "key": "Cross-Origin-Opener-Policy",
+              "value": "same-origin"
+            },
+            {
+              "key": "Cross-Origin-Resource-Policy",
+              "value": "same-origin"
+            },
+            {
+              "key": "Origin-Agent-Cluster",
+              "value": "?1"
+            },
+            {
+              "key": "Referrer-Policy",
+              "value": "no-referrer"
+            },
+            {
+              "key": "Strict-Transport-Security",
+              "value": "max-age=31536000; includeSubDomains"
+            },
+            {
+              "key": "X-Content-Type-Options",
+              "value": "nosniff"
+            },
+            {
+              "key": "X-DNS-Prefetch-Control",
+              "value": "off"
+            },
+            {
+              "key": "X-Download-Options",
+              "value": "noopen"
+            },
+            {
+              "key": "X-Frame-Options",
+              "value": "SAMEORIGIN"
+            },
+            {
+              "key": "X-Permitted-Cross-Domain-Policies",
+              "value": "none"
+            },
+            {
+              "key": "X-XSS-Protection",
+              "value": "0"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "http://localhost:5173"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "RateLimit-Policy",
+              "value": "100;w=60"
+            },
+            {
+              "key": "RateLimit-Limit",
+              "value": "100"
+            },
+            {
+              "key": "RateLimit-Remaining",
+              "value": "98"
+            },
+            {
+              "key": "RateLimit-Reset",
+              "value": "13"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "129"
+            },
+            {
+              "key": "ETag",
+              "value": "W/\"81-pPJusmXxpssyJlT83EOHxH1dNeY\""
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 04 Oct 2026 19:51:26 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"message\": \"One of the technicians not found\",\n    \"statusCode\": 404,\n    \"details\": null,\n    \"requestId\": \"aa795427-da84-4308-ae11-8b062834d63a\"\n}"
+        },
+        {
+          "name": "409: Повторное назначение специалиста",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "[\r\n    {\r\n        \"technicianId\": \"0f77f981-490d-4259-910a-c5b1aaf787ae\",\r\n        \"role\": \"member\",\r\n        \"hours\": 23\r\n    },\r\n    {\r\n        \"technicianId\": \"cec9954a-f580-499e-9944-2fd68a96f766\",\r\n        \"role\": \"lead\",\r\n        \"hours\": 33\r\n    }\r\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/requests/{{id}}/assignees",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "requests",
+                "{{id}}",
+                "assignees"
+              ]
+            }
+          },
+          "status": "Conflict",
+          "code": 409,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "X-Request-Id",
+              "value": "5f8ce2ea-33f6-43a4-95a6-6e1e2ed5ad25"
+            },
+            {
+              "key": "Content-Security-Policy",
+              "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            },
+            {
+              "key": "Cross-Origin-Opener-Policy",
+              "value": "same-origin"
+            },
+            {
+              "key": "Cross-Origin-Resource-Policy",
+              "value": "same-origin"
+            },
+            {
+              "key": "Origin-Agent-Cluster",
+              "value": "?1"
+            },
+            {
+              "key": "Referrer-Policy",
+              "value": "no-referrer"
+            },
+            {
+              "key": "Strict-Transport-Security",
+              "value": "max-age=31536000; includeSubDomains"
+            },
+            {
+              "key": "X-Content-Type-Options",
+              "value": "nosniff"
+            },
+            {
+              "key": "X-DNS-Prefetch-Control",
+              "value": "off"
+            },
+            {
+              "key": "X-Download-Options",
+              "value": "noopen"
+            },
+            {
+              "key": "X-Frame-Options",
+              "value": "SAMEORIGIN"
+            },
+            {
+              "key": "X-Permitted-Cross-Domain-Policies",
+              "value": "none"
+            },
+            {
+              "key": "X-XSS-Protection",
+              "value": "0"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "http://localhost:5173"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "RateLimit-Policy",
+              "value": "100;w=60"
+            },
+            {
+              "key": "RateLimit-Limit",
+              "value": "100"
+            },
+            {
+              "key": "RateLimit-Remaining",
+              "value": "98"
+            },
+            {
+              "key": "RateLimit-Reset",
+              "value": "59"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "118"
+            },
+            {
+              "key": "ETag",
+              "value": "W/\"76-F/supWGYLOEZUMaMgmHj10faPx0\""
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 04 Oct 2026 19:51:57 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"message\": \"Reassign a technician\",\n    \"statusCode\": 409,\n    \"details\": null,\n    \"requestId\": \"5f8ce2ea-33f6-43a4-95a6-6e1e2ed5ad25\"\n}"
+        },
+        {
+          "name": "422: Ошибка при назначении бригады без ведущего специалиста",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "[\r\n    {\r\n        \"technicianId\": \"0f77f981-490d-4259-910a-c5b1aaf787ae\",\r\n        \"role\": \"member\",\r\n        \"hours\": 23\r\n    },\r\n    {\r\n        \"technicianId\": \"cec9954a-f580-499e-9944-2fd68a96f766\",\r\n        \"role\": \"member\",\r\n        \"hours\": 33\r\n    }\r\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/requests/{{id}}/assignees",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "requests",
+                "{{id}}",
+                "assignees"
+              ]
+            }
+          },
+          "status": "Unprocessable Entity",
+          "code": 422,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "X-Request-Id",
+              "value": "c91d7998-06ab-4668-b5bc-5c9bce5f17c6"
+            },
+            {
+              "key": "Content-Security-Policy",
+              "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            },
+            {
+              "key": "Cross-Origin-Opener-Policy",
+              "value": "same-origin"
+            },
+            {
+              "key": "Cross-Origin-Resource-Policy",
+              "value": "same-origin"
+            },
+            {
+              "key": "Origin-Agent-Cluster",
+              "value": "?1"
+            },
+            {
+              "key": "Referrer-Policy",
+              "value": "no-referrer"
+            },
+            {
+              "key": "Strict-Transport-Security",
+              "value": "max-age=31536000; includeSubDomains"
+            },
+            {
+              "key": "X-Content-Type-Options",
+              "value": "nosniff"
+            },
+            {
+              "key": "X-DNS-Prefetch-Control",
+              "value": "off"
+            },
+            {
+              "key": "X-Download-Options",
+              "value": "noopen"
+            },
+            {
+              "key": "X-Frame-Options",
+              "value": "SAMEORIGIN"
+            },
+            {
+              "key": "X-Permitted-Cross-Domain-Policies",
+              "value": "none"
+            },
+            {
+              "key": "X-XSS-Protection",
+              "value": "0"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "http://localhost:5173"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "RateLimit-Policy",
+              "value": "100;w=60"
+            },
+            {
+              "key": "RateLimit-Limit",
+              "value": "100"
+            },
+            {
+              "key": "RateLimit-Remaining",
+              "value": "99"
+            },
+            {
+              "key": "RateLimit-Reset",
+              "value": "60"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "135"
+            },
+            {
+              "key": "ETag",
+              "value": "W/\"87-Pt0kE8jYP025ZyqVzJLBshBcn00\""
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 04 Oct 2026 19:54:58 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"message\": \"The tecnicians must have only one lead\",\n    \"statusCode\": 422,\n    \"details\": null,\n    \"requestId\": \"c91d7998-06ab-4668-b5bc-5c9bce5f17c6\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Delete Request Assignee",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200)\r",
+              "})\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "[\r\n    {\r\n        \"technicianId\": \"0df0ecbc-79cc-4c87-b2bd-16e673476751\",\r\n        \"role\": \"member\",\r\n        \"hours\": 23\r\n    },\r\n    {\r\n        \"technicianId\": \"63ff9a99-6672-4dae-a407-d9c93044adcb\",\r\n        \"role\": \"lead\",\r\n        \"hours\": 40\r\n    },\r\n    {\r\n        \"technicianId\": \"a4cbd891-cd22-450e-853e-dfde6ee9ddc4\",\r\n        \"role\": \"member\",\r\n        \"hours\": 40\r\n    }\r\n]"
+        },
+        "url": {
+          "raw": "{{url}}/requests/{{id}}/assignees/{{technicianId}}",
+          "host": [
+            "{{url}}"
+          ],
+          "path": [
+            "requests",
+            "{{id}}",
+            "assignees",
+            "{{technicianId}}"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "200: Успешное снятие специалиста с заявки",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "[\r\n    {\r\n        \"technicianId\": \"0df0ecbc-79cc-4c87-b2bd-16e673476751\",\r\n        \"role\": \"member\",\r\n        \"hours\": 23\r\n    },\r\n    {\r\n        \"technicianId\": \"63ff9a99-6672-4dae-a407-d9c93044adcb\",\r\n        \"role\": \"lead\",\r\n        \"hours\": 40\r\n    },\r\n    {\r\n        \"technicianId\": \"a4cbd891-cd22-450e-853e-dfde6ee9ddc4\",\r\n        \"role\": \"member\",\r\n        \"hours\": 40\r\n    }\r\n]"
+            },
+            "url": {
+              "raw": "{{url}}/requests/{{id}}/assignees/{{technicianId}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "requests",
+                "{{id}}",
+                "assignees",
+                "{{technicianId}}"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "X-Request-Id",
+              "value": "14549c8b-bc92-4e1b-a1fe-9d1aee58869f"
+            },
+            {
+              "key": "Content-Security-Policy",
+              "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            },
+            {
+              "key": "Cross-Origin-Opener-Policy",
+              "value": "same-origin"
+            },
+            {
+              "key": "Cross-Origin-Resource-Policy",
+              "value": "same-origin"
+            },
+            {
+              "key": "Origin-Agent-Cluster",
+              "value": "?1"
+            },
+            {
+              "key": "Referrer-Policy",
+              "value": "no-referrer"
+            },
+            {
+              "key": "Strict-Transport-Security",
+              "value": "max-age=31536000; includeSubDomains"
+            },
+            {
+              "key": "X-Content-Type-Options",
+              "value": "nosniff"
+            },
+            {
+              "key": "X-DNS-Prefetch-Control",
+              "value": "off"
+            },
+            {
+              "key": "X-Download-Options",
+              "value": "noopen"
+            },
+            {
+              "key": "X-Frame-Options",
+              "value": "SAMEORIGIN"
+            },
+            {
+              "key": "X-Permitted-Cross-Domain-Policies",
+              "value": "none"
+            },
+            {
+              "key": "X-XSS-Protection",
+              "value": "0"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "http://localhost:5173"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "RateLimit-Policy",
+              "value": "100;w=60"
+            },
+            {
+              "key": "RateLimit-Limit",
+              "value": "100"
+            },
+            {
+              "key": "RateLimit-Remaining",
+              "value": "98"
+            },
+            {
+              "key": "RateLimit-Reset",
+              "value": "54"
+            },
+            {
+              "key": "Content-Type",
+              "value": "text/plain; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "2"
+            },
+            {
+              "key": "ETag",
+              "value": "W/\"2-nOO9QiTIwXgNtWtBJezz8kv3SLc\""
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 04 Oct 2026 19:57:17 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "cookie": [],
+          "body": "OK"
+        }
+      ]
+    },
+    {
+      "name": "Get Request Status History",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": [
+        {
+          "name": "200: Успешное получение истории изменения заявок",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/requests/{{id}}/history",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "requests",
+                "{{id}}",
+                "history"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "X-Request-Id",
+              "value": "defdc628-25a8-4e60-91a5-ae12d83338a0"
+            },
+            {
+              "key": "Content-Security-Policy",
+              "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+            },
+            {
+              "key": "Cross-Origin-Opener-Policy",
+              "value": "same-origin"
+            },
+            {
+              "key": "Cross-Origin-Resource-Policy",
+              "value": "same-origin"
+            },
+            {
+              "key": "Origin-Agent-Cluster",
+              "value": "?1"
+            },
+            {
+              "key": "Referrer-Policy",
+              "value": "no-referrer"
+            },
+            {
+              "key": "Strict-Transport-Security",
+              "value": "max-age=31536000; includeSubDomains"
+            },
+            {
+              "key": "X-Content-Type-Options",
+              "value": "nosniff"
+            },
+            {
+              "key": "X-DNS-Prefetch-Control",
+              "value": "off"
+            },
+            {
+              "key": "X-Download-Options",
+              "value": "noopen"
+            },
+            {
+              "key": "X-Frame-Options",
+              "value": "SAMEORIGIN"
+            },
+            {
+              "key": "X-Permitted-Cross-Domain-Policies",
+              "value": "none"
+            },
+            {
+              "key": "X-XSS-Protection",
+              "value": "0"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "http://localhost:5173"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "RateLimit-Policy",
+              "value": "100;w=60"
+            },
+            {
+              "key": "RateLimit-Limit",
+              "value": "100"
+            },
+            {
+              "key": "RateLimit-Remaining",
+              "value": "94"
+            },
+            {
+              "key": "RateLimit-Reset",
+              "value": "31"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "420"
+            },
+            {
+              "key": "ETag",
+              "value": "W/\"1a4-kIdggfiKvDLtbFHeCBeeOr48+xU\""
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 04 Oct 2026 19:58:49 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n    {\n        \"id\": \"21089d94-0d6e-4e58-b943-83a639f1faaf\",\n        \"requestId\": \"d6877ab1-9e41-440e-9f14-7f644f400599\",\n        \"oldStatus\": \"new\",\n        \"newStatus\": \"in_progress\",\n        \"author\": null,\n        \"comment\": null,\n        \"createdAt\": \"2026-10-04T19:58:40.238Z\"\n    },\n    {\n        \"id\": \"bfbcf364-059b-458b-b46b-8726e85a3272\",\n        \"requestId\": \"d6877ab1-9e41-440e-9f14-7f644f400599\",\n        \"oldStatus\": \"in_progress\",\n        \"newStatus\": \"done\",\n        \"author\": null,\n        \"comment\": null,\n        \"createdAt\": \"2026-10-04T19:58:45.018Z\"\n    }\n]"
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
     }
   ],
   "variable": [
     {
       "key": "id",
       "value": ""
+    },
+    {
+      "key": "technicianId",
+      "value": "",
+      "type": "default"
     }
   ]
 }
