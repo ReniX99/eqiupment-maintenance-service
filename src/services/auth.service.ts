@@ -1,9 +1,13 @@
 import bcrypt from "bcrypt";
-import { RegisterUserDto } from "../schemas/users/users.schema";
+import { LoginUserDto, RegisterUserDto } from "../schemas/users/users.schema";
 import * as usersRepository from "../repositories/users.repository";
 import * as techniciansRepository from "../repositories/technicians.repository";
 import { connection } from "../database/connection";
 import ConflictError from "../errors/conflict.error";
+import UnauthorizedError from "../errors/unauthorized.error";
+import * as jwt from "jsonwebtoken";
+import InternalServerError from "../errors/internal-server.error";
+import { Response } from "express";
 
 export const register = async (user: RegisterUserDto) => {
   const { login, password, technician } = user;
@@ -40,4 +44,50 @@ export const register = async (user: RegisterUserDto) => {
     );
     return { id: userModel.id };
   });
+};
+
+export const login = async (user: LoginUserDto, res: Response) => {
+  const { login, password } = user;
+
+  return connection.transaction(async (t) => {
+    const existingUser = await usersRepository.getUser(login, t);
+
+    if (!existingUser) {
+      throw new UnauthorizedError("Wrong login or password");
+    }
+
+    const isMatch = await bcrypt.compare(password, existingUser.hashPassword);
+
+    if (!isMatch) {
+      throw new UnauthorizedError("Wrong login or password");
+    }
+
+    const payload = { userId: existingUser.id, role: existingUser.role };
+
+    const accessToken = generateToken(payload, "15m");
+    const refreshToken = generateToken(payload, "7d");
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
+
+    return { accessToken };
+  });
+};
+
+const generateToken = (
+  payload: { userId: string; role: string },
+  expiresIn: string,
+) => {
+  const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+  if (!JWT_SECRET_KEY) {
+    throw new InternalServerError(
+      "Environment variable JWT_SECRET_KEY is not found",
+    );
+  }
+
+  return jwt.sign(payload, process.env.JWT_SECRET_KEY!, { expiresIn });
 };

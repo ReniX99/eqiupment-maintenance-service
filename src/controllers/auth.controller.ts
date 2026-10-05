@@ -1,5 +1,5 @@
 import { type Request, type Response } from "express";
-import { RegisterUserDto } from "../schemas/users/users.schema";
+import { LoginUserDto, RegisterUserDto } from "../schemas/users/users.schema";
 import * as authService from "../services/auth.service";
 
 export const register = async (
@@ -11,4 +11,15 @@ export const register = async (
   const user = await authService.register(schema);
 
   res.status(201).json(user);
+};
+
+export const login = async (
+  req: Request,
+  res: Response<{}, { body: LoginUserDto }>,
+) => {
+  const schema = res.locals.body;
+
+  const token = await authService.login(schema, res);
+
+  res.status(201).json(token);
 };

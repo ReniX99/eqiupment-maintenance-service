@@ -1,10 +1,8 @@
 import { Transaction } from "sequelize";
 import User from "../database/models/user.model";
-import { TCreateTechnician } from "../types/technician.type";
 
 export const getUser = async (login: string, t: Transaction) => {
   return User.findOne({
-    attributes: ["id"],
     where: {
       login,
     },

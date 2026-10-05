@@ -13,3 +13,10 @@ export const registerUserSchema = z.strictObject({
 });
 
 export type RegisterUserDto = z.infer<typeof registerUserSchema>;
+
+export const loginUserSchema = z.strictObject({
+  login: z.string().min(6).max(100),
+  password: z.string().min(6).max(100),
+});
+
+export type LoginUserDto = z.infer<typeof loginUserSchema>;
