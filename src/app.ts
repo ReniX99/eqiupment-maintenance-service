@@ -8,6 +8,7 @@ import helmet from "helmet";
 import cors from "cors";
 import { handleNotFoundRoute } from "./middlewares/not-found.middleware";
 import { connect } from "./database/connection";
+import cookieParser from "cookie-parser";
 
 process.loadEnvFile(".env");
 
@@ -35,6 +36,7 @@ const rateLimiter = rateLimit({
 
 app.use(rateLimiter);
 
+app.use(cookieParser());
 app.use(express.json({ limit: process.env.REQUEST_SIZE_LIMIT }));
 app.use("/api", router);
 app.use(handleNotFoundRoute);

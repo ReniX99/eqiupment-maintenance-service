@@ -8,6 +8,8 @@ import UnauthorizedError from "../errors/unauthorized.error";
 import * as jwt from "jsonwebtoken";
 import InternalServerError from "../errors/internal-server.error";
 import { Response } from "express";
+import { TJwtPayload } from "../types/jwt-payload.type";
+import ForbiddenError from "../errors/forbidden.error";
 
 export const register = async (user: RegisterUserDto) => {
   const { login, password, technician } = user;
@@ -90,4 +92,30 @@ const generateToken = (
   }
 
   return jwt.sign(payload, process.env.JWT_SECRET_KEY!, { expiresIn });
+};
+
+export const refresh = async (refreshToken?: string) => {
+  if (!refreshToken) {
+    throw new UnauthorizedError("No Refresh Token");
+  }
+
+  const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+  if (!JWT_SECRET_KEY) {
+    throw new InternalServerError(
+      "Environment variable JWT_SECRET_KEY is not found",
+    );
+  }
+
+  try {
+    const payload = jwt.verify(refreshToken, JWT_SECRET_KEY) as TJwtPayload;
+
+    const accessToken = generateToken(
+      { userId: payload.userId, role: payload.role },
+      "15m",
+    );
+
+    return { accessToken };
+  } catch (error) {
+    throw new ForbiddenError("Invalid Refresh Token");
+  }
 };

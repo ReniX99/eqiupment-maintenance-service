@@ -23,3 +23,11 @@ export const login = async (
 
   res.status(201).json(token);
 };
+
+export const refresh = async (req: Request, res: Response) => {
+  const refreshToken = req.cookies.refreshToken;
+
+  const token = await authService.refresh(refreshToken);
+
+  res.status(201).json(token);
+};
