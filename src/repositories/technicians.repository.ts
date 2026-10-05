@@ -16,3 +16,21 @@ export const getTechnician = async (id: string) => {
     return Technician.findByPk(id, { transaction: t });
   });
 };
+
+export const createTechnician = async (
+  fullName: string,
+  specialization: string,
+  employeeId: string,
+  t: Transaction,
+) => {
+  return Technician.create(
+    {
+      fullName,
+      specialization,
+      employeeId,
+    },
+    {
+      transaction: t,
+    },
+  );
+};
