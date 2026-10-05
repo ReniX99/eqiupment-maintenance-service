@@ -119,3 +119,7 @@ export const refresh = async (refreshToken?: string) => {
     throw new ForbiddenError("Invalid Refresh Token");
   }
 };
+
+export const logout = async (res: Response) => {
+  res.clearCookie("refreshToken");
+};

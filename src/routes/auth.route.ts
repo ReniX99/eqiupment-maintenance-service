@@ -4,7 +4,12 @@ import {
   loginUserSchema,
   registerUserSchema,
 } from "../schemas/users/users.schema";
-import { login, refresh, register } from "../controllers/auth.controller";
+import {
+  login,
+  logout,
+  refresh,
+  register,
+} from "../controllers/auth.controller";
 import rateLimit from "express-rate-limit";
 import TooManyRequestsError from "../errors/too-many-requests.error";
 import { type Response } from "express";
@@ -31,5 +36,7 @@ router
   .post(rateLimiter, validate({ body: loginUserSchema }), login);
 
 router.route("/refresh").post(refresh);
+
+router.route("/logout").post(logout);
 
 export default router;

@@ -31,3 +31,9 @@ export const refresh = async (req: Request, res: Response) => {
 
   res.status(201).json(token);
 };
+
+export const logout = async (req: Request, res: Response) => {
+  await authService.logout(res);
+
+  res.sendStatus(204);
+};
