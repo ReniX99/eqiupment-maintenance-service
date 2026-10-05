@@ -25,25 +25,41 @@ import {
   addRequestAssignees,
   deleteRequestAssignee,
 } from "../controllers/request-assignees.controller";
+import { authorization } from "../middlewares/auth.middleware";
+import { requireRole } from "../middlewares/rbac.middleware";
 
 const router = Router();
 
 router
   .route("/")
-  .get(validate({ query: requestsQuerySchema }), getRequests)
-  .post(validate({ body: createRequestSchema }), createRequest);
+  .get(authorization, validate({ query: requestsQuerySchema }), getRequests)
+  .post(
+    authorization,
+    requireRole("technician", "admin"),
+    validate({ body: createRequestSchema }),
+    createRequest,
+  );
 router
   .route("/:id")
-  .get(validate({ params: requestParamsSchema }), getRequest)
+  .get(authorization, validate({ params: requestParamsSchema }), getRequest)
   .patch(
+    authorization,
+    requireRole("technician", "admin"),
     validate({ params: requestParamsSchema, body: updateRequestSchema }),
     updateRequest,
   )
-  .delete(validate({ params: requestParamsSchema }), deleteRequest);
+  .delete(
+    authorization,
+    requireRole("admin"),
+    validate({ params: requestParamsSchema }),
+    deleteRequest,
+  );
 
 router
   .route("/:id/assignees")
   .post(
+    authorization,
+    requireRole("admin"),
     validate({ params: requestParamsSchema, body: addRequestAssigneesSchema }),
     addRequestAssignees,
   );
@@ -51,17 +67,25 @@ router
 router
   .route("/:id/assignees/:userId")
   .delete(
+    authorization,
+    requireRole("admin"),
     validate({ params: requestAssigneeParamsSchema }),
     deleteRequestAssignee,
   );
 
 router
   .route("/:id/history")
-  .get(validate({ params: requestParamsSchema }), getRequestStatusHistory);
+  .get(
+    authorization,
+    validate({ params: requestParamsSchema }),
+    getRequestStatusHistory,
+  );
 
 router
   .route("/:id/status")
   .patch(
+    authorization,
+    requireRole("technician", "admin"),
     validate({ params: requestParamsSchema, body: updateRequestStatusSchema }),
     updateRequestStatus,
   );
