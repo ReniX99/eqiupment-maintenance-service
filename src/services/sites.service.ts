@@ -39,7 +39,6 @@ export const getSiteSummary = async (id: string) => {
     return {
       ...summary.reduce(
         (acc, row) => {
-          console.log(row);
           acc[row.status][row.priority] = Number(row.count);
           return acc;
         },
