@@ -16,27 +16,46 @@ import {
   updateEquipmentSchema,
 } from "../schemas/equipments/equipments.schema";
 import { weatherQuerySchema } from "../schemas/weather/weather.schema";
+import { authorization } from "../middlewares/auth.middleware";
+import { requireRole } from "../middlewares/rbac.middleware";
 
 const router = Router();
 
 router
   .route("/")
-  .get(validate({ query: equipmentsQuerySchema }), getEquipments)
-  .post(validate({ body: createEquipmentSchema }), createEquipment);
+  .get(authorization, validate({ query: equipmentsQuerySchema }), getEquipments)
+  .post(
+    authorization,
+    requireRole("admin"),
+    validate({ body: createEquipmentSchema }),
+    createEquipment,
+  );
 router
   .route("/:id")
-  .get(validate({ params: equipmentParamsSchema }), getEquipment)
+  .get(authorization, validate({ params: equipmentParamsSchema }), getEquipment)
   .patch(
+    authorization,
+    requireRole("admin"),
     validate({ params: equipmentParamsSchema, body: updateEquipmentSchema }),
     updateEquipment,
   )
-  .delete(validate({ params: equipmentParamsSchema }), deleteEquipment);
+  .delete(
+    authorization,
+    requireRole("admin"),
+    validate({ params: equipmentParamsSchema }),
+    deleteEquipment,
+  );
 router
   .route("/:id/requests")
-  .get(validate({ params: equipmentParamsSchema }), getEquipmentRequests);
+  .get(
+    authorization,
+    validate({ params: equipmentParamsSchema }),
+    getEquipmentRequests,
+  );
 router
   .route("/:id/weather")
   .get(
+    authorization,
     validate({ params: equipmentParamsSchema, query: weatherQuerySchema }),
     getEquipmentWeatherForecast,
   );

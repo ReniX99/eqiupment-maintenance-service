@@ -39,7 +39,7 @@ router
 
 router.route("/refresh").post(refresh);
 
-router.route("/logout").post(logout);
+router.route("/logout").post(authorization, logout);
 
 router.route("/me").get(authorization, getMe);
 
