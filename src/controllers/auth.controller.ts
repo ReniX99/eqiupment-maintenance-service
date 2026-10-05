@@ -1,6 +1,7 @@
 import { type Request, type Response } from "express";
 import { LoginUserDto, RegisterUserDto } from "../schemas/users/users.schema";
 import * as authService from "../services/auth.service";
+import * as usersService from "../services/users.service";
 
 export const register = async (
   req: Request,
@@ -36,4 +37,10 @@ export const logout = async (req: Request, res: Response) => {
   await authService.logout(res);
 
   res.sendStatus(204);
+};
+
+export const getMe = async (req: Request, res: Response) => {
+  const user = await usersService.getUser(req.user.userId);
+
+  res.status(200).json(user);
 };

@@ -5,6 +5,7 @@ import {
   registerUserSchema,
 } from "../schemas/users/users.schema";
 import {
+  getMe,
   login,
   logout,
   refresh,
@@ -13,6 +14,7 @@ import {
 import rateLimit from "express-rate-limit";
 import TooManyRequestsError from "../errors/too-many-requests.error";
 import { type Response } from "express";
+import { authorization } from "../middlewares/auth.middleware";
 
 const router = Router();
 
@@ -38,5 +40,7 @@ router
 router.route("/refresh").post(refresh);
 
 router.route("/logout").post(logout);
+
+router.route("/me").get(authorization, getMe);
 
 export default router;

@@ -7,9 +7,10 @@ import ConflictError from "../errors/conflict.error";
 import UnauthorizedError from "../errors/unauthorized.error";
 import * as jwt from "jsonwebtoken";
 import InternalServerError from "../errors/internal-server.error";
-import { Response } from "express";
+import { type Request, type Response } from "express";
 import { TJwtPayload } from "../types/jwt-payload.type";
 import ForbiddenError from "../errors/forbidden.error";
+import * as usersService from "../services/users.service";
 
 export const register = async (user: RegisterUserDto) => {
   const { login, password, technician } = user;
@@ -122,4 +123,29 @@ export const refresh = async (refreshToken?: string) => {
 
 export const logout = async (res: Response) => {
   res.clearCookie("refreshToken");
+};
+
+export const verifyToken = async (req: Request) => {
+  const auth = req.headers.authorization;
+  if (!auth?.startsWith("Bearer ")) {
+    throw new UnauthorizedError("Unauthorized");
+  }
+
+  const token = auth.split(" ")[1];
+
+  const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+  if (!JWT_SECRET_KEY) {
+    throw new InternalServerError(
+      "Environment variable JWT_SECRET_KEY is not found",
+    );
+  }
+
+  try {
+    const payload = jwt.verify(token, JWT_SECRET_KEY) as TJwtPayload;
+    await usersService.getUser(payload.userId);
+
+    return payload;
+  } catch {
+    throw new UnauthorizedError("Invalid Access Token");
+  }
 };
