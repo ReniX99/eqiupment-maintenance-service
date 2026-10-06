@@ -1,8 +1,10 @@
 const path = require("path")
 
+const folderPath = process.env.NODE_ENV === "production" ? "dist" : "src"
+
 module.exports = {
-    config: path.resolve("src/database", "config.js"),
-    "migrations-path": path.resolve("src/database", "migrations"),
-    "models-path": path.resolve("src/database", "models"),
-    "seeders-path": path.resolve("src/database", "seeds")
+    config: path.resolve(`${folderPath}/database`, "config.js"),
+    "migrations-path": path.resolve(`${folderPath}/database`, "migrations"),
+    "models-path": path.resolve(`${folderPath}/database`, "models"),
+    "seeders-path": path.resolve(`${folderPath}/database`, "seeds")
 }

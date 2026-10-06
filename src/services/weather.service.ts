@@ -4,7 +4,9 @@ import GatewayTimeoutError from "../errors/gatewey-timeout.error";
 import BadGatewayError from "../errors/bad-gateway.error";
 import HttpError from "../errors/http.error";
 
-process.loadEnvFile(".env");
+if (process.env.NODE_ENV !== "production") {
+  process.loadEnvFile(".env");
+}
 
 function getTimeout() {
   const envTimeout = Number(process.env.REQUEST_TIMEOUT_MS);

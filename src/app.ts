@@ -10,7 +10,9 @@ import { handleNotFoundRoute } from "./middlewares/not-found.middleware";
 import { connect } from "./database/connection";
 import cookieParser from "cookie-parser";
 
-process.loadEnvFile(".env");
+if (process.env.NODE_ENV !== "production") {
+  process.loadEnvFile(".env");
+}
 
 const app: Express = express();
 
