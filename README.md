@@ -7,8 +7,6 @@ REST API для учёта заявок на техническое обслуж
 Для запуска приложения необходимо установить:
 
 - Git
-- Node.js **20+**
-- npm **10+**
 - Docker
 - Docker Compose
 
@@ -28,7 +26,7 @@ cd <project-name>
 
 ### 3. Настройка окружения
 
-Создайте файл `.env` в корневой директории проекта. Используйте файл `.env.example` как шаблон
+Создайте файл `.env.prod` в корневой директории проекта. Используйте файл `.env.example` как шаблон
 
 ```env
 PORT= ... # Порт программы
@@ -42,33 +40,11 @@ POSTGRES_USER= ... # Имя пользователя PostgreSQL
 POSTGRES_PASSWORD= ... # Пароль пользователя PostgreSQL
 POSTGRES_DB= ... # Имя базы данных PostgreSQL
 DATABASE_URL= ... # Строка подключения к базе данных PostgreSQL
+SALT_ROUNDS= ... # Количество раундов для хеширования bcrypt
+JWT_SECRET_KEY= ... # Ключ для подписи JWT-токена
 ```
 
-### 4. Запуск PostgreSQL
-
-```bash
-docker compose up -d
-```
-
-### 5. Установка зависимостей
-
-```bash
-npm install
-```
-
-### 6. Применение миграций
-
-```bash
-npx sequelize-cli db:migrate
-```
-
-### 7. Заполнение базы данных сидами
-
-```bash
-npx sequelize-cli db:seed:all
-```
-
-### 8 Настройка конфигурации для пригодности работ
+### 4 Настройка конфигурации для пригодности работ
 
 Конфигурации расположена в `config/weather.json`
 
@@ -81,17 +57,16 @@ npx sequelize-cli db:seed:all
 }
 ```
 
-### 9. Запуск приложения
+### 5. Запуск приложения
 
 ```bash
-npm run dev
+docker compose -f docker-compose.prod.yaml --env-file .env.prod up -d
 ```
 
 ## Таблица эндпоинтов
 
 <img width="841" height="618" alt="image" src="https://github.com/user-attachments/assets/94e789ba-2c27-4bf2-a457-b3fc6b2b15e7" />
 <img width="1172" height="329" alt="image" src="https://github.com/user-attachments/assets/76a28e88-bd8b-493e-b766-454e221371d1" />
-
 
 ## Формат ошибки
 
