@@ -16,6 +16,8 @@ if (process.env.NODE_ENV !== "production") {
 
 const app: Express = express();
 
+app.set("trust proxy", true);
+
 app.use(httpLogger);
 
 app.use(helmet());
