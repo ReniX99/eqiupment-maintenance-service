@@ -1,6 +1,8 @@
 import { Sequelize } from "sequelize-typescript";
 
-process.loadEnvFile(".env");
+if (process.env.NODE_ENV !== "production") {
+  process.loadEnvFile(".env");
+}
 export const connection = new Sequelize(process.env.DATABASE_URL!, {
   models: [__dirname + "/models"],
   logging: false,
