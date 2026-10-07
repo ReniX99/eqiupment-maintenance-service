@@ -42,6 +42,8 @@ POSTGRES_DB= ... # Имя базы данных PostgreSQL
 DATABASE_URL= ... # Строка подключения к базе данных PostgreSQL
 SALT_ROUNDS= ... # Количество раундов для хеширования bcrypt
 JWT_SECRET_KEY= ... # Ключ для подписи JWT-токена
+ADMIN_LOGIN=... # Логин админа
+ADMIN_PASSWORD=... # Пароль админа
 ```
 
 ### 4 Настройка конфигурации для пригодности работ
@@ -62,6 +64,10 @@ JWT_SECRET_KEY= ... # Ключ для подписи JWT-токена
 ```bash
 docker compose -f docker-compose.prod.yaml --env-file .env.prod up -d
 ```
+
+### 6. Вход под админом
+
+Логин и пароль админа расположены в `.env.prod` файле
 
 ## Таблица эндпоинтов
 
