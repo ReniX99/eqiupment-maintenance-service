@@ -37,17 +37,6 @@ export async function up(queryInterface, Sequelize) {
     }
   })
 
-
-  await queryInterface.sequelize.query(`
-    CREATE TYPE "enum_equipments_type"
-    AS ENUM ('turbine', 'inverter', 'sensor', 'substation');
-    `)
-
-  await queryInterface.sequelize.query(`
-    CREATE TYPE "enum_equipments_status"
-    AS ENUM ('operational', 'maintenance', 'fault', 'decommissioned');
-    `)
-
   await queryInterface.createTable("equipments", {
     id: {
       type: DataTypes.UUID,

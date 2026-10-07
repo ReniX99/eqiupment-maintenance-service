@@ -22,4 +22,4 @@ COPY --from=build /app/src/database/config.js /app/dist/database/
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "npx sequelize-cli db:migrate && npm run start"]
+CMD ["sh", "-c", "npm run start"]
