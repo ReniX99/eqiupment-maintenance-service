@@ -4,6 +4,7 @@ import EquipmentsRouter from "./routes/equipments.route";
 import RequestsRouter from "./routes/maintenance-requests.route";
 import SitesRouter from "./routes/sites.route";
 import AuthRouter from "./routes/auth.route";
+import TechniciansRouter from "./routes/technicians.route";
 
 const router = Router();
 
@@ -12,5 +13,6 @@ router.use("/equipment", EquipmentsRouter);
 router.use("/requests", RequestsRouter);
 router.use("/sites", SitesRouter);
 router.use("/auth", AuthRouter);
+router.use("/technicians", TechniciansRouter);
 
 export default router;
