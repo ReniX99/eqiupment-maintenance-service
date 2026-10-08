@@ -34,3 +34,9 @@ export const createTechnician = async (
     },
   );
 };
+
+export const getAllTechnicians = async () => {
+  return connection.transaction(async (t) => {
+    return Technician.findAll({transaction: t})
+  })
+}
